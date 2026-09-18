@@ -1,0 +1,167 @@
+/**
+ * Money Calendar — mock ledger for September 2026.
+ *
+ * Hand-tuned fake data: one person, one month in Sydney. The month is built to
+ * exact totals so the recap numbers always reconcile with the calendar:
+ *   $4,821.00 spent · 111+ transactions · 6 no-spend days
+ *   Saturday 12 September is the single most expensive day at $486.00
+ *   Uber is the repeat offender at 21 rides
+ * August 2026 ($5,478) exists only as the previous-month comparison.
+ */
+
+(function (global) {
+  'use strict';
+
+const MONTH = { year: 2026, month: 9, label: 'September 2026', short: 'SEPTEMBER' };
+
+/** Previous month's total, used for the "vs last month" line. */
+const PREVIOUS_MONTH_TOTAL = 5478;
+
+/** Display order + identity for every category in the ledger. */
+const CATEGORIES = {
+  Food:      { emoji: '\u{1F35C}', tone: 'rose'   },
+  Shopping:  { emoji: '\u{1F6CD}\uFE0F', tone: 'plum'   },
+  Transport: { emoji: '\u{1F695}', tone: 'ink'    },
+  Wellness:  { emoji: '\u{1F486}', tone: 'sage'   },
+  Fun:       { emoji: '\u{1F377}', tone: 'punch'  },
+  Groceries: { emoji: '\u{1F96C}', tone: 'sage'   },
+  Home:      { emoji: '\u{1F56F}\uFE0F', tone: 'amber'  },
+  Travel:    { emoji: '\u2708\uFE0F', tone: 'ink'    },
+  Gifts:     { emoji: '\u{1F381}', tone: 'amber'  },
+};
+
+/** The filter chips shown above the calendar. */
+const FILTERS = ['All', 'Food', 'Shopping', 'Transport', 'Fun', 'Wellness'];
+
+/** Every transaction, sorted by day then time. Amounts are AUD. */
+const TRANSACTIONS = [
+  { id: 't001', day:  1, time: '13:33', merchant: 'Single O',                  emoji: '☕', category: 'Food',      amount:     6.95 },
+  { id: 't002', day:  1, time: '13:34', merchant: 'Glue Store',                emoji: '👟', category: 'Shopping',  amount:    89.07 },
+  { id: 't003', day:  1, time: '15:53', merchant: 'Flowers',                   emoji: '💐', category: 'Home',      amount:    26.33 },
+  { id: 't004', day:  1, time: '21:19', merchant: 'Ho Jiak',                   emoji: '🍜', category: 'Food',      amount:    52.50 },
+  { id: 't005', day:  3, time: '12:57', merchant: 'Mary\'s',                   emoji: '🍔', category: 'Food',      amount:    28.21 },
+  { id: 't006', day:  3, time: '15:38', merchant: 'Gelato Messina',            emoji: '🍨', category: 'Food',      amount:    12.17 },
+  { id: 't007', day:  3, time: '17:33', merchant: 'Uber',                      emoji: '🚕', category: 'Transport', amount:    12.98 },
+  { id: 't008', day:  4, time: '07:25', merchant: 'Train to Newcastle',        emoji: '🚄', category: 'Travel',    amount:    41.50 },
+  { id: 't009', day:  4, time: '09:34', merchant: 'Single O',                  emoji: '☕', category: 'Food',      amount:     6.90 },
+  { id: 't010', day:  4, time: '12:04', merchant: 'Fish market',               emoji: '🐟', category: 'Groceries', amount:    30.83 },
+  { id: 't011', day:  4, time: '13:57', merchant: 'Mary\'s',                   emoji: '🍔', category: 'Food',      amount:    29.61 },
+  { id: 't012', day:  4, time: '17:50', merchant: 'Uber',                      emoji: '🚕', category: 'Transport', amount:    13.25 },
+  { id: 't013', day:  4, time: '20:01', merchant: 'Ho Jiak',                   emoji: '🍜', category: 'Food',      amount:    43.00 },
+  { id: 't014', day:  5, time: '10:17', merchant: 'Flowers',                   emoji: '💐', category: 'Home',      amount:    31.00 },
+  { id: 't015', day:  5, time: '13:34', merchant: 'Incu',                      emoji: '🧥', category: 'Shopping',  amount:   167.27 },
+  { id: 't016', day:  5, time: '13:57', merchant: 'Cornersmith',               emoji: '🥪', category: 'Food',      amount:    17.26 },
+  { id: 't017', day:  5, time: '14:43', merchant: 'Bunnings',                  emoji: '🪴', category: 'Home',      amount:    28.50 },
+  { id: 't018', day:  5, time: '16:55', merchant: 'Tokyo Lamington',           emoji: '🍩', category: 'Food',      amount:    10.51 },
+  { id: 't019', day:  5, time: '16:59', merchant: 'Card & wrap',               emoji: '💌', category: 'Gifts',     amount:    13.79 },
+  { id: 't020', day:  5, time: '17:40', merchant: 'Uber',                      emoji: '🚕', category: 'Transport', amount:    17.07 },
+  { id: 't021', day:  5, time: '18:36', merchant: 'Ho Jiak',                   emoji: '🍜', category: 'Food',      amount:    56.00 },
+  { id: 't022', day:  5, time: '18:41', merchant: 'Uber',                      emoji: '🚕', category: 'Transport', amount:    14.05 },
+  { id: 't023', day:  5, time: '23:10', merchant: 'Bar night',                 emoji: '🍸', category: 'Fun',       amount:    55.53 },
+  { id: 't024', day:  6, time: '09:25', merchant: 'Fish market',               emoji: '🐟', category: 'Groceries', amount:    38.95 },
+  { id: 't025', day:  6, time: '09:49', merchant: 'Lune',                      emoji: '🥐', category: 'Food',      amount:    11.65 },
+  { id: 't026', day:  6, time: '16:21', merchant: 'Gelato Messina',            emoji: '🍨', category: 'Food',      amount:    12.06 },
+  { id: 't027', day:  6, time: '16:34', merchant: 'Harris Farm',               emoji: '🍓', category: 'Groceries', amount:    32.50 },
+  { id: 't028', day:  7, time: '07:49', merchant: 'Sonoma',                    emoji: '🥐', category: 'Food',      amount:    16.67 },
+  { id: 't029', day:  7, time: '11:38', merchant: 'Glue Store',                emoji: '👟', category: 'Shopping',  amount:    63.08 },
+  { id: 't030', day:  7, time: '17:53', merchant: 'Opal top-up',               emoji: '🚇', category: 'Transport', amount:    24.50 },
+  { id: 't031', day:  7, time: '20:34', merchant: 'Mary\'s',                   emoji: '🍔', category: 'Food',      amount:    30.50 },
+  { id: 't032', day:  8, time: '15:45', merchant: 'Bodypace physio',           emoji: '🩺', category: 'Wellness',  amount:    92.67 },
+  { id: 't033', day:  8, time: '16:44', merchant: 'Tokyo Lamington',           emoji: '🍩', category: 'Food',      amount:     9.93 },
+  { id: 't034', day:  8, time: '16:57', merchant: 'Vans',                      emoji: '👟', category: 'Shopping',  amount:   134.41 },
+  { id: 't035', day:  8, time: '20:10', merchant: 'Chat Thai',                 emoji: '🍜', category: 'Food',      amount:    31.29 },
+  { id: 't036', day: 10, time: '12:27', merchant: 'Cornersmith',               emoji: '🥪', category: 'Food',      amount:    19.88 },
+  { id: 't037', day: 10, time: '13:55', merchant: 'Mary\'s',                   emoji: '🍔', category: 'Food',      amount:    34.00 },
+  { id: 't038', day: 10, time: '14:16', merchant: 'Single O',                  emoji: '☕', category: 'Food',      amount:     6.16 },
+  { id: 't039', day: 11, time: '07:11', merchant: 'Single O',                  emoji: '☕', category: 'Food',      amount:     6.23 },
+  { id: 't040', day: 11, time: '10:59', merchant: 'Sauna House',               emoji: '🔥', category: 'Wellness',  amount:    48.50 },
+  { id: 't041', day: 11, time: '19:36', merchant: 'Wine bar',                  emoji: '🍷', category: 'Fun',       amount:    76.68 },
+  { id: 't042', day: 11, time: '21:26', merchant: 'Gelato Messina',            emoji: '🍨', category: 'Food',      amount:    10.70 },
+  { id: 't043', day: 12, time: '09:42', merchant: 'Single O',                  emoji: '☕', category: 'Food',      amount:     6.50 },
+  { id: 't044', day: 12, time: '10:55', merchant: 'Uber',                      emoji: '🚕', category: 'Transport', amount:    24.00 },
+  { id: 't045', day: 12, time: '12:40', merchant: 'Lunch at Ho Jiak',          emoji: '🍜', category: 'Food',      amount:    68.00 },
+  { id: 't046', day: 12, time: '14:20', merchant: 'COS',                       emoji: '🛍', category: 'Shopping',  amount:   248.00 },
+  { id: 't047', day: 12, time: '19:05', merchant: 'Dinner at Ester',           emoji: '🍷', category: 'Fun',       amount:   112.00 },
+  { id: 't048', day: 12, time: '23:18', merchant: 'Uber',                      emoji: '🚕', category: 'Transport', amount:    27.50 },
+  { id: 't049', day: 13, time: '09:19', merchant: 'Sonoma',                    emoji: '🥐', category: 'Food',      amount:     8.93 },
+  { id: 't050', day: 13, time: '10:58', merchant: 'Norton St Grocer',          emoji: '🧀', category: 'Groceries', amount:    21.48 },
+  { id: 't051', day: 13, time: '13:43', merchant: 'Airbnb Kangaroo Valley',    emoji: '🏨', category: 'Travel',    amount:   138.00 },
+  { id: 't052', day: 13, time: '16:27', merchant: 'Bodypace physio',           emoji: '🩺', category: 'Wellness',  amount:    88.54 },
+  { id: 't053', day: 13, time: '18:32', merchant: 'Uber',                      emoji: '🚕', category: 'Transport', amount:    11.70 },
+  { id: 't054', day: 13, time: '20:38', merchant: 'Chin Chin',                 emoji: '🍜', category: 'Food',      amount:    71.28 },
+  { id: 't055', day: 13, time: '22:41', merchant: 'Uber',                      emoji: '🚕', category: 'Transport', amount:    23.77 },
+  { id: 't056', day: 14, time: '12:25', merchant: 'Poke bowl',                 emoji: '🥗', category: 'Food',      amount:    19.32 },
+  { id: 't057', day: 14, time: '17:34', merchant: 'Harris Farm',               emoji: '🍓', category: 'Groceries', amount:    31.50 },
+  { id: 't058', day: 14, time: '20:27', merchant: 'Chin Chin',                 emoji: '🍜', category: 'Food',      amount:    61.00 },
+  { id: 't059', day: 15, time: '10:09', merchant: 'Single O',                  emoji: '☕', category: 'Food',      amount:     7.63 },
+  { id: 't060', day: 15, time: '10:46', merchant: 'Kmart',                     emoji: '🕯', category: 'Home',      amount:    23.23 },
+  { id: 't061', day: 15, time: '13:56', merchant: 'Cornersmith',               emoji: '🥪', category: 'Food',      amount:    21.00 },
+  { id: 't062', day: 15, time: '18:59', merchant: 'Chat Thai',                 emoji: '🍜', category: 'Food',      amount:    38.50 },
+  { id: 't063', day: 16, time: '08:15', merchant: 'Uber',                      emoji: '🚕', category: 'Transport', amount:    20.50 },
+  { id: 't064', day: 16, time: '09:20', merchant: 'Fish market',               emoji: '🐟', category: 'Groceries', amount:    26.50 },
+  { id: 't065', day: 16, time: '13:29', merchant: 'Chat Thai',                 emoji: '🍜', category: 'Food',      amount:    34.00 },
+  { id: 't066', day: 16, time: '15:59', merchant: 'COS',                       emoji: '🛍', category: 'Shopping',  amount:    96.50 },
+  { id: 't067', day: 16, time: '16:28', merchant: 'Gelato Messina',            emoji: '🍨', category: 'Food',      amount:    11.88 },
+  { id: 't068', day: 16, time: '18:34', merchant: 'Harris Farm',               emoji: '🍓', category: 'Groceries', amount:    34.89 },
+  { id: 't069', day: 18, time: '08:25', merchant: 'Uber',                      emoji: '🚕', category: 'Transport', amount:    31.21 },
+  { id: 't070', day: 18, time: '09:47', merchant: 'Uber',                      emoji: '🚕', category: 'Transport', amount:    17.42 },
+  { id: 't071', day: 18, time: '15:23', merchant: 'Bourke St Bakery',          emoji: '🥐', category: 'Food',      amount:    10.74 },
+  { id: 't072', day: 18, time: '15:49', merchant: 'Tokyo Lamington',           emoji: '🍩', category: 'Food',      amount:    10.89 },
+  { id: 't073', day: 18, time: '16:10', merchant: 'Gelato Messina',            emoji: '🍨', category: 'Food',      amount:     7.52 },
+  { id: 't074', day: 18, time: '17:37', merchant: 'Opal top-up',               emoji: '🚇', category: 'Transport', amount:    29.56 },
+  { id: 't075', day: 19, time: '14:00', merchant: 'Poke bowl',                 emoji: '🥗', category: 'Food',      amount:    21.58 },
+  { id: 't076', day: 19, time: '14:02', merchant: 'Birthday gift',             emoji: '🎁', category: 'Gifts',     amount:    96.59 },
+  { id: 't077', day: 19, time: '15:29', merchant: 'Bourke St Bakery',          emoji: '🥐', category: 'Food',      amount:    10.37 },
+  { id: 't078', day: 19, time: '15:56', merchant: 'Kmart',                     emoji: '🕯', category: 'Home',      amount:    40.50 },
+  { id: 't079', day: 19, time: '17:06', merchant: 'Woolworths',                emoji: '🥬', category: 'Groceries', amount:    32.43 },
+  { id: 't080', day: 19, time: '17:53', merchant: 'Glue Store',                emoji: '👟', category: 'Shopping',  amount:    61.70 },
+  { id: 't081', day: 19, time: '19:00', merchant: 'Uber',                      emoji: '🚕', category: 'Transport', amount:    28.00 },
+  { id: 't082', day: 19, time: '22:27', merchant: 'Bar night',                 emoji: '🍸', category: 'Fun',       amount:    72.00 },
+  { id: 't083', day: 19, time: '22:47', merchant: 'Uber',                      emoji: '🚕', category: 'Transport', amount:    17.06 },
+  { id: 't084', day: 20, time: '09:38', merchant: 'Uber',                      emoji: '🚕', category: 'Transport', amount:    31.30 },
+  { id: 't085', day: 20, time: '10:06', merchant: 'Harris Farm',               emoji: '🍓', category: 'Groceries', amount:    25.50 },
+  { id: 't086', day: 20, time: '11:14', merchant: 'Leather journal',           emoji: '📓', category: 'Gifts',     amount:    91.00 },
+  { id: 't087', day: 20, time: '13:19', merchant: 'Chat Thai',                 emoji: '🍜', category: 'Food',      amount:    23.80 },
+  { id: 't088', day: 20, time: '16:05', merchant: 'Sauna House',               emoji: '🔥', category: 'Wellness',  amount:    50.87 },
+  { id: 't089', day: 20, time: '16:58', merchant: 'IKEA',                      emoji: '🪑', category: 'Home',      amount:   145.44 },
+  { id: 't090', day: 20, time: '17:52', merchant: 'Uber',                      emoji: '🚕', category: 'Transport', amount:    20.50 },
+  { id: 't091', day: 21, time: '09:27', merchant: 'Uber',                      emoji: '🚕', category: 'Transport', amount:    25.00 },
+  { id: 't092', day: 21, time: '09:50', merchant: 'Lune',                      emoji: '🥐', category: 'Food',      amount:    13.75 },
+  { id: 't093', day: 21, time: '12:41', merchant: 'Bunnings',                  emoji: '🪴', category: 'Home',      amount:    34.00 },
+  { id: 't094', day: 21, time: '15:28', merchant: 'Reuben Hills',              emoji: '☕', category: 'Food',      amount:     7.44 },
+  { id: 't095', day: 23, time: '09:40', merchant: 'Cornersmith',               emoji: '🥪', category: 'Food',      amount:    18.18 },
+  { id: 't096', day: 23, time: '15:03', merchant: 'Gelato Messina',            emoji: '🍨', category: 'Food',      amount:    12.35 },
+  { id: 't097', day: 23, time: '17:45', merchant: 'Kmart',                     emoji: '🕯', category: 'Home',      amount:    20.00 },
+  { id: 't098', day: 23, time: '18:44', merchant: 'Uber',                      emoji: '🚕', category: 'Transport', amount:    16.95 },
+  { id: 't099', day: 25, time: '08:55', merchant: 'Uber',                      emoji: '🚕', category: 'Transport', amount:    29.44 },
+  { id: 't100', day: 25, time: '09:02', merchant: 'Uber',                      emoji: '🚕', category: 'Transport', amount:    11.59 },
+  { id: 't101', day: 25, time: '10:41', merchant: 'Woolworths',                emoji: '🥬', category: 'Groceries', amount:    30.04 },
+  { id: 't102', day: 25, time: '12:57', merchant: 'Poke bowl',                 emoji: '🥗', category: 'Food',      amount:    20.63 },
+  { id: 't103', day: 25, time: '15:03', merchant: 'Reuben Hills',              emoji: '☕', category: 'Food',      amount:     5.90 },
+  { id: 't104', day: 25, time: '18:32', merchant: 'Ho Jiak',                   emoji: '🍜', category: 'Food',      amount:    59.50 },
+  { id: 't105', day: 26, time: '10:36', merchant: 'Lune',                      emoji: '🥐', category: 'Food',      amount:    11.49 },
+  { id: 't106', day: 26, time: '11:33', merchant: 'Better Read Than Dead',     emoji: '📚', category: 'Gifts',     amount:    84.13 },
+  { id: 't107', day: 26, time: '14:05', merchant: 'Gig ticket',                emoji: '🎫', category: 'Fun',       amount:    55.79 },
+  { id: 't108', day: 26, time: '15:38', merchant: 'Gelato Messina',            emoji: '🍨', category: 'Food',      amount:    10.77 },
+  { id: 't109', day: 26, time: '16:41', merchant: 'Glue Store',                emoji: '👟', category: 'Shopping',  amount:    80.47 },
+  { id: 't110', day: 27, time: '08:04', merchant: 'Single O',                  emoji: '☕', category: 'Food',      amount:     5.94 },
+  { id: 't111', day: 27, time: '08:30', merchant: 'Uber',                      emoji: '🚕', category: 'Transport', amount:    11.65 },
+  { id: 't112', day: 27, time: '09:19', merchant: 'Sonoma',                    emoji: '🥐', category: 'Food',      amount:    10.91 },
+  { id: 't113', day: 27, time: '10:40', merchant: 'Fish market',               emoji: '🐟', category: 'Groceries', amount:    24.63 },
+  { id: 't114', day: 27, time: '16:04', merchant: 'Bodypace physio',           emoji: '🩺', category: 'Wellness',  amount:    99.42 },
+  { id: 't115', day: 27, time: '18:34', merchant: 'Uber',                      emoji: '🚕', category: 'Transport', amount:    23.00 },
+  { id: 't116', day: 28, time: '07:30', merchant: 'Single O',                  emoji: '☕', category: 'Food',      amount:     6.72 },
+  { id: 't117', day: 28, time: '07:46', merchant: 'Sonoma',                    emoji: '🥐', category: 'Food',      amount:    13.29 },
+  { id: 't118', day: 28, time: '13:52', merchant: 'Card & wrap',               emoji: '💌', category: 'Gifts',     amount:    11.49 },
+  { id: 't119', day: 28, time: '15:06', merchant: 'Tokyo Lamington',           emoji: '🍩', category: 'Food',      amount:     7.31 },
+  { id: 't120', day: 30, time: '08:55', merchant: 'Lune',                      emoji: '🥐', category: 'Food',      amount:    10.32 },
+  { id: 't121', day: 30, time: '12:23', merchant: 'Fish market',               emoji: '🐟', category: 'Groceries', amount:    28.75 },
+  { id: 't122', day: 30, time: '13:37', merchant: 'Poke bowl',                 emoji: '🥗', category: 'Food',      amount:    22.27 },
+  { id: 't123', day: 30, time: '15:31', merchant: 'Aesop',                     emoji: '🧴', category: 'Shopping',  amount:    45.50 },
+  { id: 't124', day: 30, time: '16:37', merchant: 'Jetstar deposit',           emoji: '✈️', category: 'Travel',    amount:   177.50 },
+  { id: 't125', day: 30, time: '18:50', merchant: 'Chat Thai',                 emoji: '🍜', category: 'Food',      amount:    25.90 },
+  { id: 't126', day: 30, time: '20:01', merchant: 'Chin Chin',                 emoji: '🍜', category: 'Food',      amount:    92.21 },
+];
+
+  global.MC_DATA = { MONTH, PREVIOUS_MONTH_TOTAL, CATEGORIES, FILTERS, TRANSACTIONS };
+})(window);

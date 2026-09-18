@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Money Calendar</title>
+<meta name="description" content="A month of spending, printed like a riso money diary.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..900,0..100,0..1&family=Instrument+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<div class="shell">
+
+  <header class="masthead">
+    <p class="wordmark"><b>Money Calendar</b> · a spending diary</p>
+    <nav class="views" aria-label="Views">
+      <button type="button" class="view-tab" data-view="calendar" aria-selected="true">The calendar</button>
+      <button type="button" class="view-tab" data-view="recap" aria-selected="false">The recap</button>
+    </nav>
+  </header>
+
+  <!-- ===== calendar ===================================================== -->
+  <main id="viewCalendar">
+
+    <section class="hero">
+      <h1 class="hero-month" id="heroMonth">September 2026</h1>
+      <strong class="hero-total" id="heroTotal" aria-live="polite">$0</strong>
+      <p class="hero-delta" id="heroDelta"></p>
+    </section>
+
+    <div class="filters" id="filters" role="group" aria-label="Filter by category"></div>
+
+    <div class="weekdays" aria-hidden="true">
+      <span><span class="wd-long">Mon</span><span class="wd-short">M</span></span>
+      <span><span class="wd-long">Tue</span><span class="wd-short">T</span></span>
+      <span><span class="wd-long">Wed</span><span class="wd-short">W</span></span>
+      <span><span class="wd-long">Thu</span><span class="wd-short">T</span></span>
+      <span><span class="wd-long">Fri</span><span class="wd-short">F</span></span>
+      <span><span class="wd-long">Sat</span><span class="wd-short">S</span></span>
+      <span><span class="wd-long">Sun</span><span class="wd-short">S</span></span>
+    </div>
+
+    <div class="grid" id="grid" aria-label="Days of the month"></div>
+
+    <div class="legend" aria-hidden="true">
+      <span><i data-tier="0"></i> nothing</span>
+      <span><i style="--tone:var(--spend-1)"></i> a little</span>
+      <span><i style="--tone:var(--spend-2)"></i> a bit</span>
+      <span><i style="--tone:var(--spend-3)"></i> a lot</span>
+      <span><i style="--tone:var(--spend-4)"></i> oh dear</span>
+    </div>
+
+    <p class="colophon">Tap any day to open it. Mock data — no bank was harmed.</p>
+  </main>
+
+  <!-- ===== recap ======================================================== -->
+  <main id="viewRecap" hidden>
+    <section class="hero">
+      <p class="eyebrow" id="recapEyebrow">Your September</p>
+      <strong class="recap-total" id="recapTotal">$0</strong>
+      <p class="recap-sub" id="recapSub"></p>
+    </section>
+
+    <h2 class="eyebrow">Where it went</h2>
+    <div class="cat-bars" id="catBars"></div>
+
+    <h2 class="eyebrow section-gap">The evidence</h2>
+    <div class="insights" id="insights"></div>
+
+    <div class="share-wrap">
+      <button type="button" class="share" id="share"><span aria-hidden="true">✻</span> Share my month</button>
+    </div>
+
+    <p class="colophon">September 2026 · prototype · mock data</p>
+  </main>
+
+</div>
+
+<!-- ===== day detail ==================================================== -->
+<dialog class="sheet" id="sheet" aria-labelledby="sheetDate">
+  <div class="sheet-scroll">
+    <div class="sheet-nav">
+      <span class="nav-spacer" aria-hidden="true"></span>
+      <button type="button" class="icon-btn" id="prevDay" aria-label="Previous day">←</button>
+      <h2 class="sheet-date" id="sheetDate"></h2>
+      <button type="button" class="icon-btn" id="nextDay" aria-label="Next day">→</button>
+      <button type="button" class="icon-btn" id="closeSheet" aria-label="Close">✕</button>
+    </div>
+    <div id="sheetBody"></div>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
