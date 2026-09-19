@@ -81,15 +81,16 @@
 
 <!-- ===== day detail ==================================================== -->
 <dialog class="sheet" id="sheet" aria-labelledby="sheetDate">
-  <div class="sheet-scroll">
-    <div class="sheet-nav">
-      <span class="nav-spacer" aria-hidden="true"></span>
-      <button type="button" class="icon-btn" id="prevDay" aria-label="Previous day">←</button>
-      <h2 class="sheet-date" id="sheetDate"></h2>
-      <button type="button" class="icon-btn" id="nextDay" aria-label="Next day">→</button>
-      <button type="button" class="icon-btn" id="closeSheet" aria-label="Close">✕</button>
+  <div class="receipt">
+    <div class="r-top" id="sheetTop">
+      <button type="button" class="r-nav-btn" id="prevDay" aria-label="Previous day">←</button>
+      <button type="button" class="r-handle" id="sheetHandle" aria-label="Close" title="Swipe down or tap to close"></button>
+      <button type="button" class="r-nav-btn" id="nextDay" aria-label="Next day">→</button>
     </div>
-    <div id="sheetBody"></div>
+    <p class="r-tab" id="sheetDate"></p>
+    <div class="r-scroll" id="sheetScroll">
+      <div id="sheetBody"></div>
+    </div>
   </div>
 </dialog>
 

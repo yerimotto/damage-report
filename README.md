@@ -14,10 +14,12 @@ it cost, with the month total, the change against last month, and category
 filters (All · Food · Shopping · Transport · Fun · Wellness) that re-ink the
 whole calendar.
 
-**Day detail** — click any day. The total, a badge or two (💀 most expensive day
-of the month, classic weekend behaviour, a gentle one), every transaction
-grouped by category with a subtotal, and one playful line about how the day
-actually went. Arrow keys or ← → flick between days.
+**Day detail** — click any day and a till receipt slides up from the bottom
+edge. Torn paper edges, dashed rules, line items grouped by category with
+subtotals, a printed total, rubber stamps (💀 most expensive day, weekend
+behaviour, a gentle one), a handwritten note and a barcode seeded from the
+date. Swipe or flick it down to dismiss, or use Esc, the backdrop, or the grab
+handle. Arrow keys and ← → print the next day.
 
 **Recap** — the month summed up: where it went, and four pieces of evidence
 (most expensive day, no-spend days, repeat offender, most dangerous weekday).

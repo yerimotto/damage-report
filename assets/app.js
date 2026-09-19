@@ -267,24 +267,30 @@ var TIER_SIZE_SM = ['0%', '40%', '56%', '74%', '90%'];
     if (next) next.focus();
   });
 
-  /* ---------- day sheet ------------------------------------------------- */
+  /* ---------- day receipt drawer ---------------------------------------- */
 
   var sheet = document.getElementById('sheet');
   var sheetBody = document.getElementById('sheetBody');
+  var scroller = document.getElementById('sheetScroll');
+  var handle = document.getElementById('sheetHandle');
   var prevBtn = document.getElementById('prevDay');
   var nextBtn = document.getElementById('nextDay');
 
-  /** At most two, most interesting first. */
-  function badgesFor(day, total) {
+  /** Bare receipt figures: no currency symbol, always two decimals. */
+  function amt(n) {
+    return n.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function stampsFor(day, total) {
     var out = [];
-    if (day === MONTH_FACTS.worst) out.push(['💀', 'Most expensive day this month', true]);
-    if (day === MONTH_FACTS.quietest) out.push(['🐌', 'Your quietest spend day', false]);
+    if (day === MONTH_FACTS.worst) out.push(['💀', 'Most expensive day', true]);
+    if (day === MONTH_FACTS.quietest) out.push(['🐌', 'Quietest spend day', false]);
     var wd = weekdayOf(day);
     if (out.length === 0 && total > MONTH_FACTS.average * 1.5) {
-      out.push(['🔥', 'Heavier than most of your days', true]);
+      out.push(['🔥', 'Heavier than most', true]);
     }
     if (out.length < 2 && (wd === 5 || wd === 6) && total > MONTH_FACTS.average) {
-      out.push(['🎪', 'Classic weekend behaviour', false]);
+      out.push(['🎪', 'Weekend behaviour', false]);
     }
     if (out.length === 0 && total < MONTH_FACTS.average * 0.5) {
       out.push(['🌱', 'A gentle one', false]);
@@ -305,115 +311,153 @@ var TIER_SIZE_SM = ['0%', '40%', '56%', '74%', '90%'];
     txns.forEach(function (t) { cats[t.category] = true; });
 
     if (earlyHour < 10 && lateHour >= 22) {
-      return ['🕰', 'You started spending at ' + clock(first.time) + ' and never really stopped.'];
+      return 'You started spending at ' + clock(first.time) + ' and never really stopped.';
     }
     if (biggest.amount / total >= 0.5) {
-      return ['🫠', 'One purchase took ' + Math.round((biggest.amount / total) * 100) +
-        '% of the day. ' + biggest.merchant + ', obviously.'];
+      return 'One purchase took ' + Math.round((biggest.amount / total) * 100) +
+        '% of the day. ' + biggest.merchant + ', obviously.';
     }
-    if (ubers >= 2) {
-      return ['🚕', ubers + ' Ubers in one day. Your legs are reportedly fine.'];
-    }
-    if (food >= 4) {
-      return ['🍽', food + ' separate food decisions. A tasting menu of your own design.'];
-    }
-    if (txns.length === 1) {
-      return ['🧊', 'One transaction, all day. Frankly, heroic.'];
-    }
+    if (ubers >= 2) return ubers + ' Ubers in one day. Your legs are reportedly fine.';
+    if (food >= 4) return food + ' separate food decisions. A tasting menu of your own design.';
+    if (txns.length === 1) return 'One transaction, all day. Frankly, heroic.';
     if (lateHour >= 22) {
-      return ['🌙', 'The ' + clock(last.time) + ' ' + biggest.merchant.toLowerCase() +
-        ' run is the one to think about.'];
+      return 'The ' + clock(last.time) + ' ' + biggest.merchant.toLowerCase() +
+        ' run is the one to think about.';
     }
-    if (+last.time.split(':')[0] < 14) {
-      return ['☀️', 'All of it before 2pm. The afternoon cost you nothing.'];
-    }
-    return ['📎', txns.length + ' transactions across ' + Object.keys(cats).length +
-      ' categories. A perfectly ordinary day.'];
+    if (lateHour < 14) return 'All of it before 2pm. The afternoon cost you nothing.';
+    return txns.length + ' transactions across ' + Object.keys(cats).length +
+      ' categories. A perfectly ordinary day.';
   }
+
+  /** Bars seeded from the day, so each receipt carries its own barcode. */
+  function barcode(day) {
+    var bars = '';
+    for (var i = 0; i < 46; i++) {
+      var w = 1 + Math.round(seeded(day, 40 + i) * 2.4);
+      bars += '<i style="--w:' + w + 'px"></i>';
+    }
+    return bars;
+  }
+
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
 
   function renderSheet(day) {
     var txns = txnsFor(day, false);
     var total = sum(txns);
-    sheetBody.textContent = '';
+    var wd = WEEKDAYS[weekdayOf(day)];
+    var html = '';
 
-    document.getElementById('sheetDate').textContent =
-      WEEKDAYS[weekdayOf(day)] + ', September ' + day;
+    html += '<header class="r-head">' +
+      '<p class="r-brand">MONEY CALENDAR</p>' +
+      '<p class="r-meta">12 DIARY LANE · SURRY HILLS</p>' +
+      '<p class="r-meta">TEL 1800 NO SPEND</p>' +
+      '<div class="r-rule"></div>' +
+      '<div class="r-kv"><span>Date</span><b>' + pad(day) + '-09-2026</b></div>' +
+      '<div class="r-kv"><span>Day</span><b>' + wd + '</b></div>';
 
-    /* whole dollars here, to match the figure on the calendar tile — the
-       itemised rows below still carry the exact cents */
-    var totalEl = el('p', 'sheet-total');
-    totalEl.innerHTML = money(Math.round(total)) + '<sub>spent</sub>';
-    sheetBody.appendChild(totalEl);
+    if (txns.length) {
+      html += '<div class="r-kv"><span>Opened</span><b>' + txns[0].time + '</b></div>' +
+        '<div class="r-kv"><span>Closed</span><b>' + txns[txns.length - 1].time + '</b></div>' +
+        '<div class="r-kv"><span>Items</span><b>' + txns.length + '</b></div>';
+    } else {
+      html += '<div class="r-kv"><span>Status</span><b>Closed for business</b></div>';
+    }
+    html += '<div class="r-rule"></div></header>';
 
     if (!txns.length) {
-      var empty = el('div', 'empty-day');
-      empty.innerHTML = '<span class="big">🧘</span><strong>A no-spend day.</strong><br>' +
-        'One of ' + MONTH_FACTS.noSpend.length + ' this month. Nothing happened, financially.';
-      sheetBody.appendChild(empty);
-      wire(day);
-      return;
+      html += '<p class="r-empty">— NO ITEMS —</p><div class="r-rule"></div>';
+    } else {
+      var groups = {};
+      txns.forEach(function (t) { (groups[t.category] = groups[t.category] || []).push(t); });
+      Object.keys(groups)
+        .sort(function (a, b) { return sum(groups[b]) - sum(groups[a]); })
+        .forEach(function (cat) {
+          html += '<section class="r-sec"><div class="r-sec-head"><span>' + cat +
+            '</span><span>' + groups[cat].length +
+            (groups[cat].length === 1 ? ' item' : ' items') + '</span></div>';
+          groups[cat].forEach(function (t) {
+            html += '<div class="r-item">' +
+              '<span class="e" aria-hidden="true">' + t.emoji + '</span>' +
+              '<span class="n">' + t.merchant + '<span class="t">' + clock(t.time) + '</span></span>' +
+              '<span class="a">' + amt(t.amount) + '</span></div>';
+          });
+          html += '<div class="r-sub"><span>Subtotal</span><b>' + amt(sum(groups[cat])) +
+            '</b></div></section>';
+        });
+      html += '<div class="r-rule"></div>';
     }
 
-    var badges = el('div');
-    badgesFor(day, total).forEach(function (b) {
-      var badge = el('span', 'badge' + (b[2] ? ' hot' : ''));
-      badge.innerHTML = '<span aria-hidden="true">' + b[0] + '</span> ' + b[1];
-      badges.appendChild(badge);
-      badges.appendChild(document.createTextNode(' '));
-    });
-    sheetBody.appendChild(badges);
+    html += '<div class="r-total"><span class="k">TOTAL</span><span class="v">$' +
+      amt(total) + '</span></div>' +
+      '<div class="r-rule"></div>' +
+      '<div class="r-kv"><span>Card ····4821</span><span>' +
+      (txns.length ? 'Approved' : 'Untouched') + '</span></div>' +
+      '<div class="r-kv"><span>Currency</span><span>AUD</span></div>';
 
-    /* grouped by category, biggest spend first, chronological inside each group */
-    var groups = {};
-    txns.forEach(function (t) { (groups[t.category] = groups[t.category] || []).push(t); });
-    Object.keys(groups)
-      .sort(function (a, b) { return sum(groups[b]) - sum(groups[a]); })
-      .forEach(function (cat) {
-        var box = el('div', 'cat-group');
-        var head = el('div', 'cat-head');
-        head.innerHTML = '<span>' + (D.CATEGORIES[cat] ? D.CATEGORIES[cat].emoji + ' ' : '') + cat +
-          '</span><b>' + money(sum(groups[cat])) + '</b>';
-        box.appendChild(head);
-
-        groups[cat].forEach(function (t) {
-          var row = el('div', 'txn');
-          row.innerHTML =
-            '<span class="emoji" aria-hidden="true">' + t.emoji + '</span>' +
-            '<span class="who">' + t.merchant + '<span class="when">' + clock(t.time) + '</span></span>' +
-            '<span class="how-much">' + money(t.amount) + '</span>';
-          box.appendChild(row);
-        });
-        sheetBody.appendChild(box);
+    var stamps = txns.length
+      ? stampsFor(day, total)
+      : [['🧘', 'No-spend day', false]];
+    if (stamps.length) {
+      html += '<div class="r-stamps">';
+      stamps.forEach(function (st) {
+        html += '<span class="stamp' + (st[2] ? ' hot' : '') + '">' +
+          '<span aria-hidden="true">' + st[0] + '</span> ' + st[1] + '</span>';
       });
+      html += '</div>';
+    }
 
-    var line = insightFor(day, txns, total);
-    var insight = el('p', 'insight', line[1]);
-    insight.dataset.mark = line[0];
-    sheetBody.appendChild(insight);
+    html += '<div class="r-note"><span class="k">NOTE</span><p>' +
+      (txns.length
+        ? insightFor(day, txns, total)
+        : 'One of ' + MONTH_FACTS.noSpend.length +
+          ' no-spend days this month. Nothing happened, financially.') +
+      '</p></div>';
 
-    wire(day);
-  }
+    html += '<p class="r-thanks">THANK YOU</p>' +
+      '<div class="r-barcode" aria-hidden="true">' + barcode(day) + '</div>' +
+      '<p class="r-fine">NO REFUNDS · NO REGRETS · MOCK DATA</p>';
 
-  function wire(day) {
+    /* the tab rides above the paper, so the figure is always one glance away */
+    document.getElementById('sheetDate').innerHTML =
+      wd.slice(0, 3) + ' ' + day + ' Sep · <b>$' + amt(total) + '</b>';
+
+    sheetBody.innerHTML = html;
+    sheetBody.classList.remove('printing');
+    void sheetBody.offsetWidth;                  /* restart the print animation */
+    sheetBody.classList.add('printing');
+    scroller.scrollTop = 0;
+
     prevBtn.disabled = day <= 1;
     nextBtn.disabled = day >= DAYS_IN_MONTH;
   }
 
+  function setDim(p) {
+    sheet.style.setProperty('--sheet-dim', p);
+    document.documentElement.style.setProperty('--sheet-dim', p);
+  }
+
   function openSheet(day) {
     state.day = day;
+    sheet.style.transition = '';
+    sheet.style.transform = '';
+    setDim(1);
     renderSheet(day);
     if (!sheet.open) sheet.showModal();
-    document.getElementById('closeSheet').focus();
+    handle.focus();
   }
 
   function closeSheet() {
     if (!sheet.open) return;
-    if (reducedMotion()) { sheet.close(); return; }
-    sheet.classList.add('closing');
+    if (reducedMotion()) { sheet.close(); setDim(1); return; }
+    sheet.style.transition = 'transform .26s cubic-bezier(.32, .72, 0, 1)';
+    sheet.style.transform = 'translateY(100%)';
+    setDim(0);
     setTimeout(function () {
-      sheet.classList.remove('closing');
       sheet.close();
-    }, 170);
+      sheet.style.transition = '';
+      sheet.style.transform = '';
+      setDim(1);
+    }, 250);
   }
 
   function stepDay(delta) {
@@ -423,18 +467,92 @@ var TIER_SIZE_SM = ['0%', '40%', '56%', '74%', '90%'];
     renderSheet(next);
   }
 
-  document.getElementById('closeSheet').addEventListener('click', closeSheet);
+  handle.addEventListener('click', closeSheet);
   prevBtn.addEventListener('click', function () { stepDay(-1); });
   nextBtn.addEventListener('click', function () { stepDay(1); });
 
   sheet.addEventListener('cancel', function (e) { e.preventDefault(); closeSheet(); });
   sheet.addEventListener('click', function (e) {
-    if (e.target === sheet) closeSheet();          /* click the backdrop */
+    if (e.target === sheet) closeSheet();          /* tap the backdrop */
   });
   sheet.addEventListener('keydown', function (e) {
     if (e.key === 'ArrowLeft') { e.preventDefault(); stepDay(-1); }
     if (e.key === 'ArrowRight') { e.preventDefault(); stepDay(1); }
   });
+
+  /* Torn paper edges. Tooth depth wanders so it reads as hand-torn rather
+     than die-cut; built once and shared by every receipt. */
+  (function tearEdge() {
+    var teeth = 42;
+    var top = [];
+    var bottom = [];
+    for (var i = 0; i <= teeth; i++) {
+      var x = (i / teeth * 100).toFixed(2) + '%';
+      var depth = (2 + seeded(i, 77) * 5.5).toFixed(1) + 'px';
+      top.push(x + ' ' + (i % 2 ? depth : '0px'));
+      bottom.push(x + ' calc(100% - ' + (i % 2 ? '0px' : depth) + ')');
+    }
+    document.documentElement.style.setProperty(
+      '--tear', 'polygon(' + top.join(',') + ',' + bottom.reverse().join(',') + ')');
+  })();
+
+  /* ---- swipe down to dismiss ------------------------------------------- */
+
+  var drag = null;
+  var DISMISS_DISTANCE = 110;   /* px dragged before it lets go */
+  var DISMISS_VELOCITY = 0.5;   /* or a flick this fast, in px/ms */
+
+  sheet.addEventListener('pointerdown', function (e) {
+    if (e.button) return;
+    if (e.target.closest('.r-nav-btn')) return;
+    var onGrip = !!e.target.closest('.r-top');
+    /* from the list you can only drag once it's scrolled to the top */
+    if (!onGrip && scroller.scrollTop > 0) return;
+    drag = { y: e.clientY, t: performance.now(), dy: 0, active: onGrip, id: e.pointerId };
+    if (onGrip) sheet.setPointerCapture(e.pointerId);
+  });
+
+  sheet.addEventListener('pointermove', function (e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    var dy = e.clientY - drag.y;
+
+    if (!drag.active) {
+      if (dy > 6 && scroller.scrollTop <= 0) {
+        drag.active = true;
+        drag.y = e.clientY;                        /* start from here, no jump */
+        dy = 0;
+        sheet.setPointerCapture(e.pointerId);
+      } else if (dy < -2) {
+        drag = null;                               /* they meant to scroll */
+        return;
+      } else {
+        return;
+      }
+    }
+
+    drag.dy = dy;
+    e.preventDefault();
+    sheet.style.transition = 'none';
+    /* pulling up past the top gets resistance, never real movement */
+    sheet.style.transform = 'translateY(' + (dy > 0 ? dy : Math.max(dy * 0.2, -22)) + 'px)';
+    setDim(Math.max(0.15, 1 - Math.max(dy, 0) / 420));
+  }, { passive: false });
+
+  function endDrag() {
+    if (!drag) return;
+    var dy = drag.dy;
+    var velocity = dy / Math.max(performance.now() - drag.t, 1);
+    var letGo = drag.active && (dy > DISMISS_DISTANCE || (velocity > DISMISS_VELOCITY && dy > 36));
+    drag = null;
+
+    if (letGo) { closeSheet(); return; }
+    sheet.style.transition = 'transform .32s cubic-bezier(.22, 1, .36, 1)';
+    sheet.style.transform = '';
+    setDim(1);
+  }
+
+  sheet.addEventListener('pointerup', endDrag);
+  sheet.addEventListener('pointercancel', endDrag);
 
   /* ---------- recap ----------------------------------------------------- */
 
