@@ -666,6 +666,20 @@ var TIER_SIZE_SM = ['0%', '40%', '56%', '74%', '90%'];
 
   /* ---------- boot ------------------------------------------------------ */
 
+  /* The recap story (assets/recap.js) reads the same facts, so the two
+     surfaces can never disagree about the month. */
+  window.MC = {
+    facts: MONTH_FACTS,
+    money: money,
+    ordinal: ordinal,
+    clock: clock,
+    weekdayOf: weekdayOf,
+    seeded: seeded,
+    blobShape: blobShape,
+    WEEKDAYS: WEEKDAYS,
+    openDay: openSheet
+  };
+
   document.getElementById('heroMonth').textContent = D.MONTH.label;
   document.getElementById('recapEyebrow').textContent = 'Your ' + D.MONTH.short;
   heroTotal.dataset.value = 0;

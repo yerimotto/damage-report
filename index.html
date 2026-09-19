@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..900,0..100,0..1&family=Instrument+Sans:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="assets/styles.css">
+<link rel="stylesheet" href="assets/recap.css">
 </head>
 <body>
 
@@ -58,6 +59,15 @@
 
   <!-- ===== recap ======================================================== -->
   <main id="viewRecap" hidden>
+    <button type="button" class="rc-launch" id="playRecap">
+      <span class="rc-launch-txt">
+        <span class="k">New</span>
+        <span class="t">Your September, in five parts</span>
+        <span class="s">The damage · the pattern · your DNA · badges · your Spendy</span>
+      </span>
+      <span class="go" aria-hidden="true">▶</span>
+    </button>
+
     <section class="hero">
       <p class="eyebrow" id="recapEyebrow">Your September</p>
       <strong class="recap-total" id="recapTotal">$0</strong>
@@ -94,9 +104,25 @@
   </div>
 </dialog>
 
+<!-- ===== the five-part recap ========================================== -->
+<div class="rc" id="recap" hidden>
+  <button type="button" class="rc-zone rc-zone--back" id="rcBack" aria-label="Previous part"></button>
+  <button type="button" class="rc-zone rc-zone--next" id="rcNext" aria-label="Next part"></button>
+
+  <div class="rc-top">
+    <div class="rc-dots" id="rcDots" role="group" aria-label="Recap progress"></div>
+    <button type="button" class="rc-close" id="rcClose" aria-label="Close recap">✕</button>
+  </div>
+
+  <div class="rc-stage" id="rcStage" aria-live="polite"></div>
+
+  <p class="rc-hint" id="rcHint">tap to continue</p>
+</div>
+
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="assets/data.js"></script>
 <script src="assets/app.js"></script>
+<script src="assets/recap.js"></script>
 </body>
 </html>

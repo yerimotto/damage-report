@@ -88,6 +88,9 @@
 
 * { box-sizing: border-box; }
 
+/* a display rule on a component otherwise beats the browser's own [hidden] */
+[hidden] { display: none !important; }
+
 body {
   margin: 0;
   background: var(--paper);

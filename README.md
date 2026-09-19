@@ -25,6 +25,12 @@ handle. Arrow keys and ← → print the next day.
 (most expensive day, no-spend days, repeat offender, most dangerous weekday).
 The *Share my month* button is a prototype — nothing leaves the page.
 
+**The five-part recap** — the recap page leads with a launch card that opens a
+full-screen story: the damage, the weekend pattern, your spending DNA, three
+badges unlocked one at a time, and a Tamagotchi-ish creature generated from the
+month. Tap right to advance, left to go back; swipe, arrow keys, the progress
+dots and Esc all work. The stage is deliberately dark in both themes.
+
 ## Files
 
 | File | What's in it |
@@ -32,6 +38,8 @@ The *Share my month* button is a prototype — nothing leaves the page.
 | `index.html` | Markup for all three screens |
 | `assets/styles.css` | Design tokens, light + dark themes, calendar and sheet |
 | `assets/app.js` | Rendering, tiers, filters, insights — all derived from the data |
+| `assets/recap.css` | The full-screen recap stage |
+| `assets/recap.js` | The five-part story, badges and the creature |
 | `assets/data.js` | The mock ledger |
 
 ## The data
@@ -46,6 +54,10 @@ the calendar:
 
 Nothing is hardcoded in the UI: tiers, badges, insights and every recap figure
 are computed from `TRANSACTIONS`, so editing the ledger changes the whole app.
+The recap story reads the same facts through `window.MC`, so it can never
+disagree with the receipts. A *little treat* is defined as a Food, Fun or Gifts
+transaction of $15 or less; creature rarity is derived from how hard the month
+skews to the weekend.
 
 ## Design notes
 
