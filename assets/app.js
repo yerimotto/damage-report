@@ -423,10 +423,7 @@ var TIER_SIZE_SM = ['0%', '46%', '62%', '78%', '92%'];
       (txns.length ? 'Approved' : 'Untouched') + '</span></div>' +
       '<div class="r-kv"><span>Currency</span><span>AUD</span></div>';
 
-    html += '<p class="r-thanks">THANK YOU</p>' +
-      '<div class="r-barcode" aria-hidden="true">' + barcode(day) + '</div>' +
-      '<p class="r-meta">12 Diary Lane · Surry Hills</p>' +
-      '<p class="r-meta">Tel 1800 no spend</p>' +
+    html += '<div class="r-barcode" aria-hidden="true">' + barcode(day) + '</div>' +
       '<p class="r-fine">NO REFUNDS · NO REGRETS · MOCK DATA</p>';
 
     /* the tab rides above the paper, so the figure is always one glance away */

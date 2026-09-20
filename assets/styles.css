@@ -568,15 +568,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 .r-head { text-align: center; }
 
-.r-meta {
-  margin: 2px 0 0;
-  text-align: center;
-  font-size: 10.5px;
-  letter-spacing: .1em;
-  color: var(--r-dim);
-}
-.r-barcode + .r-meta { margin-top: 14px; }
-
 /* the day's biggest buys, stacked and tilted on top of the paper */
 .r-stack {
   display: flex;
@@ -763,20 +754,13 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 /* ---- thank you + barcode ---- */
 
-.r-thanks {
-  text-align: center;
-  margin: 24px 0 16px;
-  font-size: 18px;
-  letter-spacing: .34em;
-  text-indent: .34em;
-}
-
 .r-barcode {
   display: flex;
   align-items: flex-end;
   justify-content: center;
   gap: 2px;
   height: 46px;
+  margin-top: 28px;
 }
 .r-barcode i {
   display: block;
