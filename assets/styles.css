@@ -1,89 +1,126 @@
 /* ==========================================================================
-   Money Calendar — a risograph money diary
-   Palette: warm blush paper + a single pink ink ramp (blush → hot → deep)
-   for spend intensity, with marigold reserved for the quirky bits.
+   Money Calendar — a bullet-journal money diary
+   Dot-grid paper, a navy felt tip for ordinary days and a red one for the
+   days that hurt, highlighter on the worst. Handwriting for the numbers you
+   would have written yourself; mono for everything the page prints.
+   The only thing that is not paper is the sticker layer, and that is the point.
    ========================================================================== */
 
 :root {
   /* paper + ink */
-  --paper:      #FBF4F1;
-  --paper-2:    #F5EAE6;
-  --card:       #FFFBF9;
-  --ink:        #241B23;
-  --ink-soft:   #6B5A64;
-  --ink-faint:  #A8939C;
-  --rule:       #E7D6D0;
+  --paper:      #FCFBF6;
+  --paper-2:    #F4F2EA;
+  --card:       #FFFEFA;
+  --ink:        #1E2A3A;
+  --ink-soft:   #5B6B7C;
+  --ink-faint:  #93A2B4;
+  --rule:       #D8E2EC;
+  --dot:        #C3D2E0;
 
-  /* the spend ramp — one ink, four weights */
-  --spend-1:    #F8CBDA;
-  --spend-2:    #F2789F;
-  --spend-3:    #E5326C;
-  --spend-4:    #B3134A;
-  --on-spend-1: #7E2745;
-  --on-spend-4: #FFF1F5;
+  /* the two pens and the highlighter */
+  --pen-1:      #2F5FA8;
+  --pen-2:      #D8443C;
+  --hi:         rgb(255 226 90 / .5);
 
-  /* quirk */
-  --marigold:   #E8A33D;
-  --marigold-s: #FBEBD1;
+  /* spend ramp, kept under the old names so components need no rewiring */
+  --spend-1:    #2F5FA8;
+  --spend-2:    #2F5FA8;
+  --spend-3:    #D8443C;
+  --spend-4:    #D8443C;
+  --on-spend-1: #1E2A3A;
+  --on-spend-4: #1E2A3A;
 
-  --focus:      #E5326C;
+  /* the sticker layer */
+  --sticker:    #FF5BA8;
+  --sticker-2:  #B6FF3B;
+  --sticker-ink:#14110F;
+  --tape:       rgb(255 193 120 / .6);
 
-  --radius-sm: 10px;
-  --radius:    18px;
-  --radius-lg: 28px;
+  --marigold:   #E0A32F;
+  --marigold-s: #FBF0D4;
 
-  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
-  --font-ui: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --focus:      #D8443C;
+
+  --radius-sm: 8px;
+  --radius:    14px;
+  --radius-lg: 20px;
+
+  --font-display: 'Reenie Beanie', 'Bradley Hand', cursive;
+  --font-ui: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --font-mono: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  --wonk: 'SOFT' 40, 'WONK' 1;
-  --grain: .05;
+  /* Reenie Beanie has a small x-height and a light stroke, so it needs
+     noticeably more size than a marker hand to carry the same weight. */
+  --hand-scale: 1.42;
+
+  --wonk: normal;
+  --grain: .03;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper:      #161014;
-    --paper-2:    #1E161D;
-    --card:       #241A22;
-    --ink:        #F7EDF0;
-    --ink-soft:   #BCA8B1;
-    --ink-faint:  #7E6A74;
-    --rule:       #3A2B34;
+    --paper:      #121924;
+    --paper-2:    #18212E;
+    --card:       #16202C;
+    --ink:        #E8EEF5;
+    --ink-soft:   #A3B3C4;
+    --ink-faint:  #6A7B8D;
+    --rule:       #2A3748;
+    --dot:        #263445;
 
-    --spend-1:    #7E3350;
-    --spend-2:    #B03C68;
-    --spend-3:    #E23E75;
-    --spend-4:    #FF5C8F;
-    --on-spend-1: #FFE1EC;
-    --on-spend-4: #2A0512;
+    --pen-1:      #6FA8FF;
+    --pen-2:      #FF6B62;
+    --hi:         rgb(255 226 90 / .22);
 
-    --marigold:   #F0B75E;
-    --marigold-s: #3B2C16;
-    --focus:      #FF6B9A;
-    --grain: .07;
+    --spend-1:    #6FA8FF;
+    --spend-2:    #6FA8FF;
+    --spend-3:    #FF6B62;
+    --spend-4:    #FF6B62;
+    --on-spend-1: #E8EEF5;
+    --on-spend-4: #E8EEF5;
+
+    --sticker:    #FF5BA8;
+    --sticker-2:  #B6FF3B;
+    --sticker-ink:#14110F;
+    --tape:       rgb(255 193 120 / .34);
+
+    --marigold:   #E8B75C;
+    --marigold-s: #33290F;
+    --focus:      #FF6B62;
+    --grain: .05;
   }
 }
 
 :root[data-theme="dark"] {
-  --paper:      #161014;
-  --paper-2:    #1E161D;
-  --card:       #241A22;
-  --ink:        #F7EDF0;
-  --ink-soft:   #BCA8B1;
-  --ink-faint:  #7E6A74;
-  --rule:       #3A2B34;
+  --paper:      #121924;
+  --paper-2:    #18212E;
+  --card:       #16202C;
+  --ink:        #E8EEF5;
+  --ink-soft:   #A3B3C4;
+  --ink-faint:  #6A7B8D;
+  --rule:       #2A3748;
+  --dot:        #263445;
 
-  --spend-1:    #7E3350;
-  --spend-2:    #B03C68;
-  --spend-3:    #E23E75;
-  --spend-4:    #FF5C8F;
-  --on-spend-1: #FFE1EC;
-  --on-spend-4: #2A0512;
+  --pen-1:      #6FA8FF;
+  --pen-2:      #FF6B62;
+  --hi:         rgb(255 226 90 / .22);
 
-  --marigold:   #F0B75E;
-  --marigold-s: #3B2C16;
-  --focus:      #FF6B9A;
-  --grain: .07;
+  --spend-1:    #6FA8FF;
+  --spend-2:    #6FA8FF;
+  --spend-3:    #FF6B62;
+  --spend-4:    #FF6B62;
+  --on-spend-1: #E8EEF5;
+  --on-spend-4: #E8EEF5;
+
+  --sticker:    #FF5BA8;
+  --sticker-2:  #B6FF3B;
+  --sticker-ink:#14110F;
+  --tape:       rgb(255 193 120 / .34);
+
+  --marigold:   #E8B75C;
+  --marigold-s: #33290F;
+  --focus:      #FF6B62;
+  --grain: .05;
 }
 
 * { box-sizing: border-box; }
@@ -94,6 +131,8 @@
 body {
   margin: 0;
   background: var(--paper);
+  background-image: radial-gradient(var(--dot) 1.3px, transparent 1.4px);
+  background-size: 20px 20px;
   color: var(--ink);
   font-family: var(--font-ui);
   font-size: 16px;
@@ -162,8 +201,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .view-tab:hover { color: var(--ink); background: var(--paper-2); }
 .view-tab[aria-selected="true"] {
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--sticker);
+  color: var(--sticker-ink);
+  box-shadow: 0 0 0 2px var(--sticker-ink), 2.5px 3px 0 var(--sticker-ink);
+  font-weight: 500;
 }
 
 /* ---------- hero -------------------------------------------------------- */
@@ -174,21 +215,20 @@ button { font: inherit; color: inherit; cursor: pointer; }
   font-family: var(--font-display);
   font-variation-settings: var(--wonk);
   font-weight: 600;
-  font-size: clamp(1.6rem, 4.5vw, 2.3rem);
-  line-height: 1.05;
-  letter-spacing: -.015em;
-  margin: 0 0 6px;
+  font-size: calc(clamp(1.6rem, 4.5vw, 2.3rem) * var(--hand-scale));
+  line-height: 1;
+  letter-spacing: 0;
+  margin: 0 0 2px;
   text-wrap: balance;
 }
 
 .hero-total {
   font-family: var(--font-display);
   font-variation-settings: 'SOFT' 60, 'WONK' 1;
-  font-weight: 800;
-  font-size: clamp(3.6rem, 15vw, 7rem);
-  line-height: .88;
-  letter-spacing: -.045em;
-  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+  font-size: calc(clamp(3.4rem, 14vw, 6.2rem) * var(--hand-scale));
+  line-height: .78;
+  letter-spacing: .01em;
   margin: 0;
   display: block;
   transition: opacity .2s ease;
@@ -229,19 +269,26 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 
 .chip {
-  background: transparent;
-  border: 1px solid var(--rule);
+  background: var(--card);
+  border: 2px solid var(--ink-faint);
   border-radius: 999px;
-  padding: 7px 15px;
-  font-size: 14px;
+  padding: 6px 14px;
+  font-size: 12.5px;
+  letter-spacing: .04em;
   color: var(--ink-soft);
-  transition: border-color .18s ease, color .18s ease, background .18s ease, transform .18s ease;
+  transform: rotate(var(--tilt, -1deg));
+  transition: transform .18s cubic-bezier(.34, 1.56, .64, 1), box-shadow .18s ease,
+              background .18s ease, color .18s ease, border-color .18s ease;
 }
-.chip:hover { color: var(--ink); border-color: var(--ink-faint); transform: translateY(-1px); }
+.chip:nth-child(even) { --tilt: 1.4deg; }
+.chip:hover { color: var(--ink); border-color: var(--ink); transform: rotate(0deg) translateY(-1px); }
+/* the selected one is a sticker someone pressed down */
 .chip[aria-pressed="true"] {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--paper);
+  background: var(--sticker);
+  border-color: var(--sticker-ink);
+  color: var(--sticker-ink);
+  box-shadow: 2.5px 3px 0 var(--sticker-ink);
+  font-weight: 500;
 }
 
 /* ---------- calendar ---------------------------------------------------- */
@@ -271,28 +318,26 @@ button { font: inherit; color: inherit; cursor: pointer; }
   position: relative;
   aspect-ratio: 1;
   min-width: 0;
-  padding: 7px 9px;
+  padding: 4px 6px;
   border: 0;
   border-radius: var(--radius);
-  background: var(--paper-2);
+  background: transparent;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
-  overflow: hidden;
-  transition: transform .22s cubic-bezier(.34, 1.56, .64, 1), box-shadow .22s ease;
+  transition: transform .2s cubic-bezier(.34, 1.56, .64, 1);
 }
-.day:hover { transform: translateY(-3px); box-shadow: 0 10px 22px -14px var(--ink); }
-.day:active { transform: translateY(-1px) scale(.985); }
+.day:hover { transform: translateY(-3px) rotate(-1deg); }
+.day:active { transform: translateY(-1px) scale(.97); }
 
 .date {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1.2;
   text-align: left;
   color: var(--ink-faint);
   z-index: 2;
 }
 
-/* the ink box owns everything below the date, so the two never collide */
 .ink {
   position: relative;
   display: grid;
@@ -300,72 +345,72 @@ button { font: inherit; color: inherit; cursor: pointer; }
   min-height: 0;
 }
 
-/* the ink blob: an organic shape whose radii are seeded per day */
-.blob {
-  position: absolute;
+/* a ring drawn round the day, with what it cost written inside it */
+.ring {
+  display: grid;
+  place-items: center;
   height: var(--size);
   aspect-ratio: 1;
   max-width: 100%;
-  border-radius: var(--shape);
-  background: var(--tone);
-  transform: rotate(var(--spin));
-  animation: bloom .5s cubic-bezier(.34, 1.56, .64, 1) backwards;
+  border: var(--pen) solid var(--tone);
+  border-radius: var(--shape, 48% 52% 51% 49% / 52% 48% 53% 47%);
+  background: var(--fill, transparent);
+  animation: draw .42s cubic-bezier(.22, 1, .36, 1) backwards;
   animation-delay: var(--delay, 0ms);
 }
+.day[data-tier="1"] .ring { --tone: var(--pen-1); --pen: 1.5px; }
+.day[data-tier="2"] .ring { --tone: var(--pen-1); --pen: 2px; }
+.day[data-tier="3"] .ring { --tone: var(--pen-2); --pen: 2.5px; }
+.day[data-tier="4"] .ring { --tone: var(--pen-2); --pen: 3px; --fill: var(--hi); }
 
-/* a second, misregistered pass — riso printing never lines up */
-.day[data-tier="3"] .blob::after,
-.day[data-tier="4"] .blob::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: var(--tone-echo);
-  mix-blend-mode: multiply;
-  transform: translate(5%, 6%) rotate(-7deg);
-}
-
-@keyframes bloom {
-  from { transform: rotate(var(--spin)) scale(.2); opacity: 0; }
-  to   { transform: rotate(var(--spin)) scale(1); opacity: 1; }
-}
+@keyframes draw { from { opacity: 0; transform: scale(.55) rotate(-8deg); } }
 
 .amt {
-  position: relative;
-  z-index: 2;
   font-family: var(--font-mono);
-  font-size: clamp(11px, 1.35vw, 14px);
+  font-size: clamp(9px, 1.1vw, 12px);
   font-variant-numeric: tabular-nums;
   letter-spacing: -.02em;
-  color: var(--on-spend-1);
+  color: var(--ink);
 }
-.day[data-tier="3"] .amt,
-.day[data-tier="4"] .amt { color: var(--on-spend-4); }
 
-/* an ordinary quiet day: no ink at all, just a whisper of a dot */
-.day[data-tier="0"] { background: transparent; box-shadow: inset 0 0 0 1px var(--rule); }
+/* a day with nothing on it stays blank paper */
 .day[data-tier="0"] .ink::after {
   content: "";
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
   background: var(--rule);
 }
-.day[data-tier="0"]:hover { box-shadow: inset 0 0 0 1px var(--ink-faint); }
 
-/* the damage sticker on the month's worst day */
+/* the sticker that marks the worst day of the month */
 .day .skull {
   position: absolute;
-  top: 6px;
-  right: 7px;
+  top: 1px;
+  right: 12%;
   z-index: 3;
-  font-size: clamp(12px, 1.7vw, 17px);
+  font-size: clamp(13px, 1.8vw, 19px);
   transform: rotate(9deg);
+  filter:
+    drop-shadow(1px 0 0 var(--paper)) drop-shadow(-1px 0 0 var(--paper))
+    drop-shadow(0 1px 0 var(--paper)) drop-shadow(0 -1px 0 var(--paper))
+    drop-shadow(0 2px 0 rgb(0 0 0 / .16))
+    drop-shadow(0 6px 8px rgb(0 0 0 / .26));
   animation: wobble 2.8s ease-in-out infinite;
 }
 @keyframes wobble {
   0%, 100% { transform: rotate(9deg); }
   50%      { transform: rotate(-7deg) scale(1.07); }
+}
+
+/* puffy, die-cut: the one layer that is not paper */
+.e3 {
+  display: inline-block;
+  line-height: 1;
+  filter:
+    drop-shadow(1px 0 0 #fff) drop-shadow(-1px 0 0 #fff)
+    drop-shadow(0 1px 0 #fff) drop-shadow(0 -1px 0 #fff)
+    drop-shadow(0 2px 0 rgb(0 0 0 / .16))
+    drop-shadow(0 6px 9px rgb(0 0 0 / .28));
 }
 
 .legend {
@@ -382,13 +427,14 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .legend span { display: inline-flex; align-items: center; gap: 6px; }
 .legend i {
-  width: 13px;
-  height: 13px;
-  border-radius: 58% 42% 47% 53% / 52% 46% 54% 48%;
-  background: var(--tone);
+  width: 14px;
+  height: 14px;
+  border-radius: 48% 52% 51% 49% / 52% 48% 53% 47%;
+  border: var(--pen, 2px) solid var(--tone);
+  background: var(--fill, transparent);
   display: inline-block;
 }
-.legend i[data-tier="0"] { background: transparent; box-shadow: inset 0 0 0 1px var(--rule); }
+.legend i[data-tier="0"] { border: 1px dashed var(--rule); }
 
 /* ---------- day receipt drawer ------------------------------------------
    The day detail is a till receipt that slides up from the bottom edge and
@@ -397,10 +443,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
    ------------------------------------------------------------------------ */
 
 .sheet {
-  --r-paper:  #F8F7F3;
-  --r-ink:    #1C1A19;
-  --r-dim:    #8D8A83;
-  --r-rule:   #C7C3BA;
+  --r-paper:  #FCFBF6;
+  --r-ink:    #1E2A3A;
+  --r-dim:    #8095A8;
+  --r-rule:   #CBD9E4;
 
   border: 0;
   padding: 0;
@@ -435,10 +481,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
   }
 }
 :root[data-theme="dark"] .sheet {
-  --r-paper: #1D1922;
-  --r-ink:   #F0EAED;
-  --r-dim:   #8B7F87;
-  --r-rule:  #3B323A;
+  --r-paper: #1B2531;
+  --r-ink:   #E8EEF5;
+  --r-dim:   #7E90A2;
+  --r-rule:  #35455A;
   filter: drop-shadow(0 -10px 26px rgba(0, 0, 0, .62));
 }
 
@@ -660,7 +706,23 @@ button { font: inherit; color: inherit; cursor: pointer; }
   transform: rotate(-3deg);
 }
 .stamp:nth-child(even) { transform: rotate(2.5deg); }
-.stamp.hot { color: var(--spend-3); border-style: double; border-width: 4px; }
+.stamp.hot { color: var(--pen-2); border-style: double; border-width: 4px; }
+
+/* the receipt is taped into the journal at both top corners */
+.receipt::before,
+.receipt::after {
+  content: "";
+  position: absolute;
+  z-index: 4;
+  top: 14px;
+  width: 104px;
+  height: 25px;
+  background: var(--tape);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / .3);
+  pointer-events: none;
+}
+.receipt::before { left: -28px; transform: rotate(-38deg); }
+.receipt::after  { right: -28px; transform: rotate(38deg); }
 
 /* ---- the diarist's note ---- */
 
@@ -680,11 +742,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .r-note p {
   margin: 0;
   font-family: var(--font-display);
-  font-variation-settings: var(--wonk);
-  font-style: italic;
-  font-size: 1.02rem;
-  line-height: 1.38;
+  font-size: calc(1.02rem * var(--hand-scale));
+  line-height: 1.15;
   text-wrap: pretty;
+  color: var(--pen-2);
 }
 
 /* ---- thank you + barcode ---- */
@@ -734,11 +795,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
   font-family: var(--font-display);
   font-variation-settings: 'SOFT' 60, 'WONK' 1;
   font-weight: 800;
-  font-size: clamp(3.6rem, 15vw, 7rem);
-  line-height: .88;
-  letter-spacing: -.045em;
-  font-variant-numeric: tabular-nums;
+  font-size: calc(clamp(3.4rem, 14vw, 6.2rem) * var(--hand-scale));
+  line-height: .78;
+  letter-spacing: .01em;
   margin: 0 0 8px;
+  font-weight: 400;
 }
 .recap-sub { color: var(--ink-soft); margin: 0 0 40px; font-size: 15px; }
 
@@ -757,7 +818,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .cat-row .name { font-size: 16px; }
 .cat-row .bar {
   display: block;
-  height: 7px;
+  height: 6px;
   margin-top: 7px;
   border-radius: 999px;
   background: var(--tone);
@@ -785,9 +846,17 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .i-card {
   padding: 20px;
   border-radius: var(--radius);
-  background: var(--paper-2);
+  background: var(--card);
+  box-shadow: 0 0 0 1.5px var(--rule);
+  transform: rotate(var(--tilt, -.7deg));
 }
-.i-card:nth-child(1) { background: var(--spend-1); color: var(--on-spend-1); }
+.i-card:nth-child(even) { --tilt: .8deg; }
+/* the headline finding is a sticker, not a card */
+.i-card:nth-child(1) {
+  background: var(--sticker);
+  color: var(--sticker-ink);
+  box-shadow: 0 0 0 2.5px var(--sticker-ink), 3px 4px 0 var(--sticker-ink);
+}
 .i-card .mark { font-size: 22px; line-height: 1; display: block; margin-bottom: 12px; }
 .i-card .k {
   font-family: var(--font-mono);
@@ -800,11 +869,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .i-card .v {
   font-family: var(--font-display);
-  font-variation-settings: var(--wonk);
-  font-weight: 600;
-  font-size: 1.32rem;
-  line-height: 1.18;
-  letter-spacing: -.02em;
+  font-size: calc(1.32rem * var(--hand-scale));
+  line-height: 1;
+  letter-spacing: 0;
   display: block;
   text-wrap: balance;
 }
@@ -820,9 +887,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .share-wrap { margin-top: 36px; display: flex; justify-content: center; }
 
 .share {
-  background: var(--ink);
-  color: var(--paper);
-  border: 0;
+  background: var(--sticker);
+  color: var(--sticker-ink);
+  border: 2.5px solid var(--sticker-ink);
+  box-shadow: 3px 4px 0 var(--sticker-ink);
   border-radius: 999px;
   padding: 16px 34px;
   font-size: 16px;
@@ -832,8 +900,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
   gap: 10px;
   transition: transform .2s cubic-bezier(.34, 1.56, .64, 1), background .2s ease;
 }
-.share:hover { transform: translateY(-2px) rotate(-1deg); }
-.share.done { background: var(--marigold); color: #24170A; }
+.share:hover { transform: translateY(-2px) rotate(-1.4deg); }
+.share.done { background: var(--sticker-2); color: var(--sticker-ink); }
 
 .toast {
   position: fixed;
@@ -870,23 +938,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
 @media (max-width: 620px) {
   .shell { padding-inline: 16px; }
   .weekdays, .grid { gap: 5px; }
-  .day { border-radius: 13px; padding: 0; grid-template-rows: minmax(0, 1fr); }
+  .day { border-radius: 10px; padding: 2px 3px; }
   .amt { display: none; }
-  .ink { position: absolute; inset: 0; }
-  .blob { height: var(--size-sm); }
-  .date {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    font-size: 11px;
-    text-align: center;
-  }
-  .day[data-tier="1"] .date,
-  .day[data-tier="2"] .date { color: var(--on-spend-1); }
-  .day[data-tier="3"] .date,
-  .day[data-tier="4"] .date { color: var(--on-spend-4); }
-  .day .skull { top: 2px; right: 3px; }
+  .ring { height: var(--size-sm); }
+  .date { font-size: 9.5px; }
+  .day .skull { top: -2px; right: 0; }
   .wd-long { display: none; }
   .wd-short { display: inline; }
   .sheet { max-width: none; }

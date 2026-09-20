@@ -61,12 +61,21 @@ skews to the weekend.
 
 ## Design notes
 
-The look is a risograph zine rather than a bank app: warm blush paper, a single
-pink ink ramp for spend intensity, and a marigold accent for the quirky bits.
-Heavy days print a second, deliberately misregistered pass in `mix-blend-mode:
-multiply` — the way riso never quite lines up. Type is Fraunces (display),
-Instrument Sans (UI) and DM Mono (figures), each with a real fallback stack.
+The look is a bullet journal rather than a bank app: dot-grid paper, a navy
+felt tip for ordinary days and a red one for the days that hurt, highlighter
+on the worst. Each day is a hand-drawn ring with what it cost written inside
+it. Type is **Reenie Beanie** for anything you'd have written yourself and
+**DM Mono** for everything the page prints — the hand is light-stroked and
+small in the x-height, so it carries a `--hand-scale` multiplier rather than
+being set at the same size as a normal display face.
 
-Blob shapes are seeded per day, so a day keeps its silhouette between renders.
-Dark theme is a full palette swap, and everything honours
+The one thing on the page that isn't paper is the sticker layer, and that's
+the point: selected filters, badges, the recap findings and the creature are
+die-cut stickers with a hard black keyline and an offset shadow, and emoji get
+a CSS treatment — a white edge traced round the glyph, a hard lip, then a cast
+shadow — so they read as puffy vinyl sitting on top of the page. The day
+receipt is taped into the journal at both corners.
+
+Ring wobble is seeded per day, so a day keeps its silhouette between renders.
+Dark theme is a full palette swap to a night-desk navy, and everything honours
 `prefers-reduced-motion`.

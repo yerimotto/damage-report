@@ -89,11 +89,11 @@
     return out;
   }
 
-  /* Blob sizes are a share of the ink box's height, so the day number — which
-   owns its own row — is never covered. Phone cells are tiny and centre the
-   number inside the blob instead, so they get their own scale. */
-var TIER_SIZE = ['0%', '44%', '62%', '82%', '100%'];
-var TIER_SIZE_SM = ['0%', '40%', '56%', '74%', '90%'];
+  /* Ring diameters are a share of the ink box's height, so the day number —
+   which owns its own row — is never covered. Phone cells are too small to
+   hold a figure inside the ring, so they get their own, tighter scale. */
+var TIER_SIZE = ['0%', '56%', '72%', '88%', '100%'];
+var TIER_SIZE_SM = ['0%', '46%', '62%', '78%', '92%'];
 
   function tierOf(amount, max) {
     if (amount <= 0) return 0;
@@ -229,18 +229,16 @@ var TIER_SIZE_SM = ['0%', '40%', '56%', '74%', '90%'];
 
       var ink = el('span', 'ink');
       if (tier > 0) {
-        var blob = el('span', 'blob');
-        blob.style.setProperty('--size', TIER_SIZE[tier]);
-        blob.style.setProperty('--size-sm', TIER_SIZE_SM[tier]);
-        blob.style.setProperty('--shape', blobShape(d));
-        blob.style.setProperty('--spin', Math.round(-14 + seeded(d, 9) * 28) + 'deg');
-        blob.style.setProperty('--tone', 'var(--spend-' + tier + ')');
-        blob.style.setProperty('--tone-echo', 'var(--spend-' + Math.max(1, tier - 2) + ')');
-        blob.style.setProperty('--delay', Math.min(shown * 22, 620) + 'ms');
-        ink.appendChild(blob);
+        /* a ring drawn round the day, with the figure written inside it */
+        var ring = el('span', 'ring');
+        ring.style.setProperty('--size', TIER_SIZE[tier]);
+        ring.style.setProperty('--size-sm', TIER_SIZE_SM[tier]);
+        ring.style.setProperty('--shape', blobShape(d));
+        ring.style.setProperty('--delay', Math.min(shown * 26, 700) + 'ms');
+        ring.appendChild(el('span', 'amt', String(Math.round(amount))));
+        ink.appendChild(ring);
         shown++;
       }
-      if (amount > 0) ink.appendChild(el('span', 'amt', money(Math.round(amount))));
       btn.appendChild(ink);
       if (d === MONTH_FACTS.worst && state.filter === 'All') {
         var skull = el('span', 'skull', '💀');

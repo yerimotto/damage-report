@@ -11,18 +11,20 @@
   display: flex;
   flex-direction: column;
 
-  --s-bg:    #131015;
-  --s-bg-2:  #1D1620;
-  --s-ink:   #FBF4F7;
-  --s-dim:   #9C8892;
-  --s-line:  #342730;
-  --s-1:     #7E3350;
-  --s-2:     #B03C68;
-  --s-3:     #E5326C;
-  --s-4:     #FF5C8F;
-  --s-gold:  #F0B75E;
+  --s-bg:    #FCFBF6;
+  --s-bg-2:  #F2F0E7;
+  --s-ink:   #1E2A3A;
+  --s-dim:   #5E7185;
+  --s-line:  #D6E0EA;
+  --s-1:     #9EC0EC;
+  --s-2:     #5C8CCB;
+  --s-3:     #2F5FA8;
+  --s-4:     #D8443C;
+  --s-gold:  #C98A12;
 
   background: var(--s-bg);
+  background-image: radial-gradient(#C3D2E0 1.3px, transparent 1.4px);
+  background-size: 20px 20px;
   color: var(--s-ink);
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -35,8 +37,8 @@
   position: absolute;
   inset: -20%;
   background:
-    radial-gradient(42% 34% at 22% 12%, rgb(229 50 108 / .24), transparent 70%),
-    radial-gradient(38% 30% at 84% 88%, rgb(255 92 143 / .16), transparent 70%);
+    radial-gradient(42% 34% at 22% 12%, rgb(255 91 168 / .14), transparent 70%),
+    radial-gradient(38% 30% at 84% 88%, rgb(255 226 90 / .18), transparent 70%);
   pointer-events: none;
   animation: rc-drift 22s ease-in-out infinite alternate;
 }
@@ -163,11 +165,10 @@
 .rc-h {
   margin: 0;
   font-family: var(--font-display);
-  font-variation-settings: 'SOFT' 50, 'WONK' 1;
-  font-weight: 800;
-  font-size: clamp(2.4rem, 9.5vw, 3.9rem);
-  line-height: .96;
-  letter-spacing: -.035em;
+  font-weight: 400;
+  font-size: calc(clamp(2.4rem, 9.5vw, 3.9rem) * var(--hand-scale));
+  line-height: .84;
+  letter-spacing: 0;
   text-wrap: balance;
 }
 .rc-h em { font-style: normal; color: var(--s-4); }
@@ -176,11 +177,10 @@
 .rc-say {
   margin: 0;
   font-family: var(--font-display);
-  font-variation-settings: 'SOFT' 50, 'WONK' 1;
-  font-weight: 600;
-  font-size: clamp(1.6rem, 6vw, 2.3rem);
-  line-height: 1.12;
-  letter-spacing: -.02em;
+  font-weight: 400;
+  font-size: calc(clamp(1.6rem, 6vw, 2.3rem) * var(--hand-scale));
+  line-height: .96;
+  letter-spacing: 0;
   text-wrap: balance;
 }
 
@@ -199,12 +199,11 @@
 .rc-money {
   margin: 0;
   font-family: var(--font-display);
-  font-variation-settings: 'SOFT' 60, 'WONK' 1;
-  font-weight: 800;
-  font-size: clamp(3rem, 14vw, 5.6rem);
-  line-height: .86;
+  font-weight: 400;
+  font-size: calc(clamp(3rem, 14vw, 5.6rem) * var(--hand-scale));
+  line-height: .76;
   white-space: nowrap;
-  letter-spacing: -.05em;
+  letter-spacing: .01em;
   font-variant-numeric: tabular-nums;
   color: var(--s-4);
 }
@@ -314,20 +313,22 @@
   align-items: center;
   gap: 15px;
   padding: 15px 17px;
-  border-radius: 18px;
-  background: var(--s-bg-2);
-  border: 1px solid var(--s-line);
+  border-radius: 16px;
+  background: #FFFEFA;
+  border: 2.5px solid var(--sticker-ink);
+  box-shadow: 3px 4px 0 var(--sticker-ink);
+  transform: rotate(-.8deg);
   opacity: 0;
   transform: translateY(14px) scale(.97);
   transition: opacity .1s;
 }
 .rc-badge.on {
   opacity: 1;
-  transform: none;
+  transform: rotate(-.8deg);
   animation: rc-unlock .62s cubic-bezier(.34, 1.56, .64, 1);
 }
 @keyframes rc-unlock {
-  from { opacity: 0; transform: translateY(16px) scale(.9) rotate(-2deg); }
+  from { opacity: 0; transform: translateY(16px) scale(.86) rotate(-7deg); }
 }
 
 .rc-medal {
@@ -338,23 +339,18 @@
   width: 54px;
   height: 54px;
   border-radius: 54% 46% 49% 51% / 51% 47% 53% 49%;
-  background: linear-gradient(150deg, var(--s-3), var(--s-2));
-  font-size: 23px;
-  overflow: hidden;
+  background: none;
+  font-size: 30px;
+  overflow: visible;
+  filter:
+    drop-shadow(1px 0 0 #fff) drop-shadow(-1px 0 0 #fff)
+    drop-shadow(0 1px 0 #fff) drop-shadow(0 -1px 0 #fff)
+    drop-shadow(0 3px 0 rgb(0 0 0 / .16))
+    drop-shadow(0 8px 12px rgb(0 0 0 / .3));
 }
-.rc-badge:nth-child(2) .rc-medal { background: linear-gradient(150deg, var(--s-4), var(--s-3)); }
-.rc-badge:nth-child(3) .rc-medal { background: linear-gradient(150deg, #6E2440, var(--s-2)); }
+.rc-badge:nth-child(2), .rc-badge:nth-child(2).on { transform: rotate(1.1deg); }
 
-/* a light sweeps across the medal as it unlocks */
-.rc-badge.on .rc-medal::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(105deg, transparent 38%, rgb(255 255 255 / .58) 50%, transparent 62%);
-  transform: translateX(-130%);
-  animation: rc-shine .85s ease .18s;
-}
-@keyframes rc-shine { to { transform: translateX(130%); } }
+
 
 .rc-badge-t {
   margin: 0;
@@ -397,8 +393,11 @@
   position: absolute;
   inset: 0;
   border-radius: 62% 38% 52% 48% / 49% 57% 43% 51%;
-  background: radial-gradient(70% 70% at 34% 28%, var(--s-4), var(--s-3) 62%, var(--s-2));
-  box-shadow: 0 22px 44px -22px var(--s-3);
+  background: radial-gradient(70% 70% at 34% 28%, #FF8FBE, var(--sticker) 58%, #D93C87);
+  box-shadow:
+    0 0 0 3px var(--sticker-ink),
+    5px 7px 0 var(--sticker-ink),
+    0 26px 40px -22px rgb(20 17 15 / .5);
 }
 
 .rc-eye {
@@ -467,11 +466,10 @@
   margin: 0;
   text-align: center;
   font-family: var(--font-display);
-  font-variation-settings: 'SOFT' 50, 'WONK' 1;
-  font-weight: 800;
-  font-size: clamp(1.9rem, 7.6vw, 2.9rem);
-  line-height: 1;
-  letter-spacing: -.03em;
+  font-weight: 400;
+  font-size: calc(clamp(1.9rem, 7.6vw, 2.9rem) * var(--hand-scale));
+  line-height: .9;
+  letter-spacing: 0;
   text-wrap: balance;
 }
 
@@ -479,10 +477,8 @@
   margin: 0;
   text-align: center;
   font-family: var(--font-display);
-  font-variation-settings: var(--wonk);
-  font-style: italic;
-  font-size: clamp(1rem, 3.8vw, 1.16rem);
-  line-height: 1.42;
+  font-size: calc(clamp(1rem, 3.8vw, 1.16rem) * var(--hand-scale));
+  line-height: 1.1;
   color: var(--s-dim);
   text-wrap: pretty;
 }
@@ -499,13 +495,16 @@
   gap: 6px;
   padding: 7px 13px;
   border-radius: 99px;
-  border: 1px solid var(--s-line);
-  background: var(--s-bg-2);
+  border: 2px solid var(--sticker-ink);
+  background: #FFFEFA;
+  box-shadow: 2px 2.5px 0 var(--sticker-ink);
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: .1em;
   text-transform: uppercase;
+  transform: rotate(var(--tilt, -1deg));
 }
+.rc-chip:nth-child(even) { --tilt: 1.2deg; }
 
 .rc-rarity {
   display: flex;
@@ -541,18 +540,15 @@
   padding: 14px 24px;
   font-size: 15px;
   font-weight: 500;
-  background: var(--s-4);
-  color: #2A0512;
+  background: var(--sticker);
+  color: var(--sticker-ink);
+  border: 2.5px solid var(--sticker-ink);
+  box-shadow: 3px 4px 0 var(--sticker-ink);
   transition: transform .2s cubic-bezier(.34, 1.56, .64, 1), background .2s ease, opacity .2s ease;
 }
 .rc-btn:hover { transform: translateY(-2px) rotate(-1deg); }
-.rc-btn--ghost {
-  background: transparent;
-  color: var(--s-ink);
-  box-shadow: inset 0 0 0 1px var(--s-line);
-}
-.rc-btn--ghost:hover { box-shadow: inset 0 0 0 1px var(--s-dim); }
-.rc-btn.got { background: var(--s-gold); color: #2A1A05; }
+.rc-btn--ghost { background: #FFFEFA; }
+.rc-btn.got { background: var(--sticker-2); }
 
 /* ---------- the way in, on the recap page ------------------------------- */
 
@@ -566,13 +562,16 @@
   margin-bottom: 34px;
   border: 0;
   border-radius: var(--radius-lg);
-  background: linear-gradient(118deg, #2A0F1D, #55153A 52%, #B3134A);
-  color: #FFF1F5;
+  background: var(--sticker);
+  color: var(--sticker-ink);
+  border: 2.5px solid var(--sticker-ink);
+  box-shadow: 4px 5px 0 var(--sticker-ink);
+  transform: rotate(-.8deg);
   transition: transform .22s cubic-bezier(.34, 1.56, .64, 1), box-shadow .22s ease;
 }
 .rc-launch:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 18px 34px -20px var(--spend-4);
+  transform: rotate(0deg) translateY(-3px);
+  box-shadow: 6px 8px 0 var(--sticker-ink);
 }
 .rc-launch-txt { flex: 1; min-width: 0; }
 .rc-launch .k {
@@ -583,17 +582,16 @@
   text-transform: uppercase;
   padding: 3px 8px;
   border-radius: 99px;
-  background: rgb(255 255 255 / .16);
+  background: rgb(20 17 15 / .14);
   margin-bottom: 9px;
 }
 .rc-launch .t {
   display: block;
   font-family: var(--font-display);
-  font-variation-settings: var(--wonk);
-  font-weight: 700;
-  font-size: 1.32rem;
-  line-height: 1.12;
-  letter-spacing: -.02em;
+  font-weight: 400;
+  font-size: calc(1.32rem * var(--hand-scale));
+  line-height: 1;
+  letter-spacing: 0;
 }
 .rc-launch .s {
   display: block;
@@ -608,8 +606,9 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: #FFF1F5;
-  color: #B3134A;
+  background: #FFFEFA;
+  color: var(--sticker-ink);
+  box-shadow: 0 0 0 2px var(--sticker-ink);
   font-size: 15px;
 }
 
