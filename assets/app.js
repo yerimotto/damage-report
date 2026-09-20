@@ -350,10 +350,36 @@ var TIER_SIZE_SM = ['0%', '46%', '62%', '78%', '92%'];
     var wd = WEEKDAYS[weekdayOf(day)];
     var html = '';
 
+    /* the day's three biggest buys, as puffy stickers on top of the paper */
+    var stack = txns.slice().sort(function (a, b) { return b.amount - a.amount; })
+      .slice(0, 3)
+      .map(function (t, i) {
+        return '<span class="e3 s' + (i + 1) + '">' + t.emoji + '</span>';
+      }).join('');
+
+    var stamps = txns.length
+      ? stampsFor(day, total)
+      : [['🧘', 'No-spend day', false]];
+
     html += '<header class="r-head">' +
-      '<p class="r-brand">MONEY CALENDAR</p>' +
-      '<p class="r-meta">12 DIARY LANE · SURRY HILLS</p>' +
-      '<p class="r-meta">TEL 1800 NO SPEND</p>' +
+      '<div class="r-stack" aria-hidden="true">' +
+        (txns.length ? stack : '<span class="e3 s1">🧘</span>') + '</div>';
+
+    if (stamps.length) {
+      html += '<div class="r-stamps">';
+      stamps.forEach(function (st) {
+        html += '<span class="stamp' + (st[2] ? ' hot' : '') + '">' +
+          '<span aria-hidden="true">' + st[0] + '</span> ' + st[1] + '</span>';
+      });
+      html += '</div>';
+    }
+
+    html += '<div class="r-note"><span class="k">Note</span><p>' +
+      (txns.length
+        ? insightFor(day, txns, total)
+        : 'One of ' + MONTH_FACTS.noSpend.length +
+          ' no-spend days this month. Nothing happened, financially.') +
+      '</p></div>' +
       '<div class="r-rule"></div>' +
       '<div class="r-kv"><span>Date</span><b>' + pad(day) + '-09-2026</b></div>' +
       '<div class="r-kv"><span>Day</span><b>' + wd + '</b></div>';
@@ -397,27 +423,10 @@ var TIER_SIZE_SM = ['0%', '46%', '62%', '78%', '92%'];
       (txns.length ? 'Approved' : 'Untouched') + '</span></div>' +
       '<div class="r-kv"><span>Currency</span><span>AUD</span></div>';
 
-    var stamps = txns.length
-      ? stampsFor(day, total)
-      : [['🧘', 'No-spend day', false]];
-    if (stamps.length) {
-      html += '<div class="r-stamps">';
-      stamps.forEach(function (st) {
-        html += '<span class="stamp' + (st[2] ? ' hot' : '') + '">' +
-          '<span aria-hidden="true">' + st[0] + '</span> ' + st[1] + '</span>';
-      });
-      html += '</div>';
-    }
-
-    html += '<div class="r-note"><span class="k">NOTE</span><p>' +
-      (txns.length
-        ? insightFor(day, txns, total)
-        : 'One of ' + MONTH_FACTS.noSpend.length +
-          ' no-spend days this month. Nothing happened, financially.') +
-      '</p></div>';
-
     html += '<p class="r-thanks">THANK YOU</p>' +
       '<div class="r-barcode" aria-hidden="true">' + barcode(day) + '</div>' +
+      '<p class="r-meta">12 Diary Lane · Surry Hills</p>' +
+      '<p class="r-meta">Tel 1800 no spend</p>' +
       '<p class="r-fine">NO REFUNDS · NO REGRETS · MOCK DATA</p>';
 
     /* the tab rides above the paper, so the figure is always one glance away */

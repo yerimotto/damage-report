@@ -552,7 +552,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 6px 26px calc(34px + env(safe-area-inset-bottom, 0px));
+  padding: 14px 26px calc(34px + env(safe-area-inset-bottom, 0px));
   font-family: var(--font-mono);
   font-size: 13px;
   line-height: 1.5;
@@ -568,19 +568,28 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 .r-head { text-align: center; }
 
-.r-brand {
-  margin: 0;
-  font-size: 15px;
-  letter-spacing: .3em;
-  text-indent: .3em;
-  font-weight: 500;
-}
 .r-meta {
   margin: 2px 0 0;
+  text-align: center;
   font-size: 10.5px;
   letter-spacing: .1em;
   color: var(--r-dim);
 }
+.r-barcode + .r-meta { margin-top: 14px; }
+
+/* the day's biggest buys, stacked and tilted on top of the paper */
+.r-stack {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2px;
+  margin: 6px 0 16px;
+  min-height: 48px;
+}
+.r-stack .e3 { line-height: 1; }
+.r-stack .s1 { font-size: 42px; transform: rotate(-11deg); }
+.r-stack .s2 { font-size: 32px; transform: rotate(9deg);  margin-left: -5px; }
+.r-stack .s3 { font-size: 26px; transform: rotate(-5deg); margin-left: -3px; }
 
 .r-rule {
   height: 0;
@@ -690,8 +699,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 12px;
-  margin: 22px 0 4px;
+  gap: 10px;
+  margin: 0 0 4px;
 }
 
 .stamp {
@@ -730,8 +739,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 /* ---- the diarist's note ---- */
 
 .r-note {
-  margin: 22px 0 0;
-  padding: 15px 17px;
+  margin: 16px 0 0;
+  padding: 14px 16px;
+  text-align: left;
   border: 1px dashed var(--r-rule);
   border-radius: 4px;
 }

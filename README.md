@@ -15,10 +15,11 @@ filters (All · Food · Shopping · Transport · Fun · Wellness) that re-ink th
 whole calendar.
 
 **Day detail** — click any day and a till receipt slides up from the bottom
-edge. Torn paper edges, dashed rules, line items grouped by category with
-subtotals, a printed total, rubber stamps (💀 most expensive day, weekend
-behaviour, a gentle one), a handwritten note and a barcode seeded from the
-date. Swipe or flick it down to dismiss, or use Esc, the backdrop, or the grab
+edge. It opens with the verdict: the day's three biggest buys as stacked 3D
+stickers, the stamps it earned (💀 most expensive day, weekend behaviour, a
+gentle one) and a handwritten note. Below that, the itemisation — dashed
+rules, line items grouped by category with subtotals, a printed total, a
+barcode seeded from the date, and the shop details signing off at the bottom. Swipe or flick it down to dismiss, or use Esc, the backdrop, or the grab
 handle. Arrow keys and ← → print the next day.
 
 **Recap** — the month summed up: where it went, and four pieces of evidence
