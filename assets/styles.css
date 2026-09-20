@@ -382,21 +382,24 @@ button { font: inherit; color: inherit; cursor: pointer; }
   background: var(--rule);
 }
 
-/* the sticker that marks the worst day of the month */
-.day .skull {
+/* an "oh dear" day gets a sticker stuck over its corner */
+.day .mark {
   position: absolute;
-  top: 1px;
-  right: 12%;
+  top: -3px;
+  left: 0;
   z-index: 3;
-  font-size: clamp(13px, 1.8vw, 19px);
-  transform: rotate(9deg);
+  font-size: clamp(16px, 2.4vw, 26px);
+  transform: rotate(-13deg);
   filter:
     drop-shadow(1px 0 0 var(--paper)) drop-shadow(-1px 0 0 var(--paper))
     drop-shadow(0 1px 0 var(--paper)) drop-shadow(0 -1px 0 var(--paper))
-    drop-shadow(0 2px 0 rgb(0 0 0 / .16))
-    drop-shadow(0 6px 8px rgb(0 0 0 / .26));
+    drop-shadow(0 2px 0 rgb(0 0 0 / .18))
+    drop-shadow(0 6px 9px rgb(0 0 0 / .3));
   animation: wobble 2.8s ease-in-out infinite;
 }
+/* the date shuffles across so the sticker never buries it */
+.day[data-tier="4"] .date { padding-left: 23px; }
+
 @keyframes wobble {
   0%, 100% { transform: rotate(9deg); }
   50%      { transform: rotate(-7deg) scale(1.07); }
@@ -942,7 +945,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .amt { display: none; }
   .ring { height: var(--size-sm); }
   .date { font-size: 9.5px; }
-  .day .skull { top: -2px; right: 0; }
+  .day .mark { top: -4px; left: -1px; font-size: 15px; }
+  .day[data-tier="4"] .date { padding-left: 13px; }
   .wd-long { display: none; }
   .wd-short { display: inline; }
   .sheet { max-width: none; }

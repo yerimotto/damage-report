@@ -208,6 +208,9 @@ var TIER_SIZE_SM = ['0%', '46%', '62%', '78%', '92%'];
   function renderCalendar() {
     var totals = dayTotals();
     var max = Math.max.apply(null, Object.keys(totals).map(function (d) { return totals[d]; }));
+    var peakDay = +Object.keys(totals).reduce(function (a, b) {
+      return totals[a] >= totals[b] ? a : b;
+    });
     if (max <= 0) max = 1;
 
     grid.textContent = '';
@@ -240,10 +243,12 @@ var TIER_SIZE_SM = ['0%', '46%', '62%', '78%', '92%'];
         shown++;
       }
       btn.appendChild(ink);
-      if (d === MONTH_FACTS.worst && state.filter === 'All') {
-        var skull = el('span', 'skull', '💀');
-        skull.setAttribute('aria-hidden', 'true');
-        btn.appendChild(skull);
+      /* every "oh dear" day gets a sticker slapped over its corner — the
+         skull is reserved for the single worst day in the current view */
+      if (tier === 4) {
+        var mark = el('span', 'mark', d === peakDay ? '💀' : '💸');
+        mark.setAttribute('aria-hidden', 'true');
+        btn.appendChild(mark);
       }
       grid.appendChild(btn);
     }
