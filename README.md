@@ -48,11 +48,11 @@ dots and Esc all work. The stage is deliberately dark in both themes.
 `assets/data.js` is fabricated, and tuned so the recap always reconciles with
 the calendar:
 
-- **$3,148.00** across 83 transactions, down 12% on August's $3,577
-- **Saturday 12 September — $486.00**, the single most expensive day, with
-  Sunday the 13th right behind it at $392 — one blow-out weekend
-- **6 no-spend days**, and Uber as the repeat offender at **14 rides**
-- Saturday is the most dangerous weekday, and 73% of the month landed
+- **$2,796.00** across 77 transactions, down 12% on August's $3,177
+- **Saturday 12 September — $486.00**, the single most expensive day, at 4.2×
+  an ordinary one
+- **6 no-spend days**, and Uber as the repeat offender at **8 rides**
+- Saturday is the most dangerous weekday, and 75% of the month landed
   between Friday and Sunday
 
 Nothing is hardcoded in the UI: tiers, badges, insights and every recap figure
