@@ -48,10 +48,12 @@ dots and Esc all work. The stage is deliberately dark in both themes.
 `assets/data.js` is fabricated, and tuned so the recap always reconciles with
 the calendar:
 
-- **$4,821.00** across 126 transactions, down 12% on August's $5,478
-- **Saturday 12 September — $486.00**, the single most expensive day
-- **6 no-spend days**, and Uber as the repeat offender at **21 rides**
-- Saturday is the most dangerous weekday at $1,520
+- **$3,148.00** across 83 transactions, down 12% on August's $3,577
+- **Saturday 12 September — $486.00**, the single most expensive day, with
+  Sunday the 13th right behind it at $392 — one blow-out weekend
+- **6 no-spend days**, and Uber as the repeat offender at **14 rides**
+- Saturday is the most dangerous weekday, and 73% of the month landed
+  between Friday and Sunday
 
 Nothing is hardcoded in the UI: tiers, badges, insights and every recap figure
 are computed from `TRANSACTIONS`, so editing the ledger changes the whole app.

@@ -95,12 +95,15 @@
 var TIER_SIZE = ['0%', '56%', '72%', '88%', '100%'];
 var TIER_SIZE_SM = ['0%', '46%', '62%', '78%', '92%'];
 
+  /* Thresholds are a share of the busiest day. They sit low because one
+     blow-out day skews the scale — at quarter-of-max, an ordinary day would
+     read the same as a quiet one and the ramp would flatten out. */
   function tierOf(amount, max) {
     if (amount <= 0) return 0;
     var r = amount / max;
-    if (r < 0.25) return 1;
-    if (r < 0.5) return 2;
-    if (r < 0.8) return 3;
+    if (r < 0.15) return 1;
+    if (r < 0.32) return 2;
+    if (r < 0.62) return 3;
     return 4;
   }
 
