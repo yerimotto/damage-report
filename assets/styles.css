@@ -373,6 +373,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
   color: var(--ink);
 }
 
+/* a day that has not happened yet is blank paper and nothing else */
+.day[data-future] { cursor: default; }
+.day[data-future]:hover { transform: none; }
+.day[data-future] .date { opacity: .42; }
+.day[data-future] .ink::after { display: none; }
+
 /* a day with nothing on it stays blank paper */
 .day[data-tier="0"] .ink::after {
   content: "";

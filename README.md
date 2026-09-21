@@ -48,12 +48,20 @@ dots and Esc all work. The stage is deliberately dark in both themes.
 `assets/data.js` is fabricated, and tuned so the recap always reconciles with
 the calendar:
 
-- **$2,796.00** across 77 transactions, down 12% on August's $3,177
-- **Saturday 12 September — $486.00**, the single most expensive day, at 4.2×
+- **$2,026.79** across 55 transactions, to **21 September** — the month is
+  still running, so the 22nd onwards is deliberately empty
+- Down 12% on August at the same point ($2,303), and pacing toward roughly
+  $2,900 by the 30th
+- **Saturday 12 September — $486.00**, the single most expensive day, at 4.3×
   an ordinary one
-- **6 no-spend days**, and Uber as the repeat offender at **8 rides**
-- Saturday is the most dangerous weekday, and 75% of the month landed
+- **3 no-spend days so far**, and Uber as the repeat offender at **7 rides**
+- Saturday is the most dangerous weekday, and 73% of the month so far landed
   between Friday and Sunday
+
+`TODAY` in the data marks how far the month has got. A day after it has not
+happened yet: it draws as blank paper with a faded date, cannot be opened, and
+counts for nothing — not the no-spend tally, not the averages, not the weekday
+totals. That is the difference between "nothing happened" and "not yet".
 
 Nothing is hardcoded in the UI: tiers, badges, insights and every recap figure
 are computed from `TRANSACTIONS`, so editing the ledger changes the whole app.

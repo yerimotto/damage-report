@@ -11,6 +11,9 @@
   var D = window.MC_DATA;
   var TX = D.TRANSACTIONS;
   var DAYS_IN_MONTH = 30;
+  /* The month is still running: nothing after this day has happened yet. */
+  var TODAY = D.TODAY || DAYS_IN_MONTH;
+  var MONTH_RUNNING = TODAY < DAYS_IN_MONTH;
   var WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
   /* ---------- little helpers ------------------------------------------- */
@@ -113,9 +116,11 @@ var TIER_SIZE_SM = ['0%', '46%', '62%', '78%', '92%'];
     var d;
     for (d = 1; d <= DAYS_IN_MONTH; d++) totals[d] = sum(txnsFor(d, false));
 
+    /* A day that has not arrived is not a no-spend day, so it counts for
+       nothing here — not the tally, not the averages, not the weekday. */
     var spendDays = [];
     var noSpend = [];
-    for (d = 1; d <= DAYS_IN_MONTH; d++) (totals[d] > 0 ? spendDays : noSpend).push(d);
+    for (d = 1; d <= TODAY; d++) (totals[d] > 0 ? spendDays : noSpend).push(d);
 
     var worst = spendDays.reduce(function (a, b) { return totals[a] >= totals[b] ? a : b; });
     var quietest = spendDays.reduce(function (a, b) { return totals[a] <= totals[b] ? a : b; });
@@ -135,7 +140,7 @@ var TIER_SIZE_SM = ['0%', '46%', '62%', '78%', '92%'];
 
     var byWeekday = [0, 0, 0, 0, 0, 0, 0];
     var weekdayCount = [0, 0, 0, 0, 0, 0, 0];
-    for (d = 1; d <= DAYS_IN_MONTH; d++) {
+    for (d = 1; d <= TODAY; d++) {
       byWeekday[weekdayOf(d)] += totals[d];
       weekdayCount[weekdayOf(d)]++;
     }
@@ -191,10 +196,11 @@ var TIER_SIZE_SM = ['0%', '46%', '62%', '78%', '92%'];
   function renderHero() {
     var shown = sum(TX.filter(inFilter));
     if (state.filter === 'All') {
-      setHeroTotal(shown, 'spent');
+      setHeroTotal(shown, MONTH_RUNNING ? 'spent so far' : 'spent');
       var change = Math.round((1 - shown / D.PREVIOUS_MONTH_TOTAL) * 100);
       heroDelta.innerHTML = '<span class="arrow" aria-hidden="true">' + (change >= 0 ? '↓' : '↑') +
-        '</span> <b>' + Math.abs(change) + '%</b> vs last month';
+        '</span> <b>' + Math.abs(change) + '%</b> vs ' +
+        (MONTH_RUNNING ? 'August to date' : 'last month');
     } else {
       setHeroTotal(shown, 'on ' + state.filter.toLowerCase());
       var share = Math.round((shown / MONTH_FACTS.total) * 100);
@@ -223,18 +229,23 @@ var TIER_SIZE_SM = ['0%', '46%', '62%', '78%', '92%'];
     var shown = 0;
     for (var d = 1; d <= DAYS_IN_MONTH; d++) {
       var amount = totals[d];
-      var tier = tierOf(amount, max);
+      var future = d > TODAY;
+      var tier = future ? 0 : tierOf(amount, max);
       var btn = el('button', 'day');
       btn.type = 'button';
       btn.dataset.tier = tier;
       btn.dataset.day = d;
+      if (future) {
+        btn.dataset.future = 'true';
+        btn.disabled = true;
+      }
       btn.setAttribute('aria-label', WEEKDAYS[weekdayOf(d)] + ' ' + ordinal(d) + ', ' +
-        (amount > 0 ? money(amount) + ' spent' : 'no spending'));
+        (future ? 'still to come' : amount > 0 ? money(amount) + ' spent' : 'no spending'));
 
       btn.appendChild(el('span', 'date', String(d)));
 
       var ink = el('span', 'ink');
-      if (tier > 0) {
+      if (tier > 0 && !future) {
         /* a ring drawn round the day, with the figure written inside it */
         var ring = el('span', 'ring');
         ring.style.setProperty('--size', TIER_SIZE[tier]);

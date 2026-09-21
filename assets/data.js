@@ -3,10 +3,11 @@
  *
  * Hand-tuned fake data: one person, one month in Sydney. The month is built to
  * exact totals so the recap numbers always reconcile with the calendar:
- *   $2,796.00 spent · 77 transactions · 6 no-spend days
+ *   $2,026.79 spent to 21 September · 55 transactions · 3 no-spend days
  *   Saturday 12 September is the single most expensive day at $486.00
- *   Uber is the repeat offender at 8 rides
- * August 2026 ($3,177) exists only as the previous-month comparison.
+ *   Uber is the repeat offender at 7 rides
+ * The 22nd onwards is deliberately empty: the month has not got there yet.
+ * August 2026 to the same date ($2,303) is the previous-month comparison.
  */
 
 (function (global) {
@@ -14,8 +15,14 @@
 
 const MONTH = { year: 2026, month: 9, label: 'September 2026', short: 'SEPTEMBER' };
 
-/** Previous month's total, used for the "vs last month" line. */
-const PREVIOUS_MONTH_TOTAL = 3177;
+/** Previous month's total at the same point, for the "vs last month" line. */
+const PREVIOUS_MONTH_TOTAL = 2303;
+
+/**
+ * The month is still running. Days after this one have not happened yet and
+ * are drawn empty — they are not no-spend days, and nothing counts them.
+ */
+const TODAY = 21;
 
 /** Display order + identity for every category in the ledger. */
 const CATEGORIES = {
@@ -89,30 +96,7 @@ const TRANSACTIONS = [
   { id: 't052', day: 20, time: '18:42', merchant: 'Norton St Grocer',          emoji: '🧀', category: 'Groceries', amount:    29.00 },
   { id: 't053', day: 21, time: '11:06', merchant: 'Fish market',               emoji: '🐟', category: 'Groceries', amount:    27.00 },
   { id: 't054', day: 21, time: '11:45', merchant: 'Kmart',                     emoji: '🕯', category: 'Home',      amount:    21.11 },
-  { id: 't055', day: 21, time: '20:03', merchant: 'Ho Jiak',                   emoji: '🍜', category: 'Food',      amount:    64.50 },
-  { id: 't056', day: 23, time: '09:30', merchant: 'Lune',                      emoji: '🥐', category: 'Food',      amount:    11.06 },
-  { id: 't057', day: 23, time: '14:06', merchant: 'Reuben Hills',              emoji: '☕', category: 'Food',      amount:     8.22 },
-  { id: 't058', day: 25, time: '16:16', merchant: 'Card & wrap',               emoji: '💌', category: 'Gifts',     amount:    15.83 },
-  { id: 't059', day: 25, time: '18:54', merchant: 'Uber',                      emoji: '🚕', category: 'Transport', amount:    18.43 },
-  { id: 't060', day: 25, time: '20:07', merchant: 'Ho Jiak',                   emoji: '🍜', category: 'Food',      amount:    46.47 },
-  { id: 't061', day: 25, time: '20:12', merchant: 'Mary\'s',                   emoji: '🍔', category: 'Food',      amount:    29.50 },
-  { id: 't062', day: 26, time: '11:23', merchant: 'Airbnb Kangaroo Valley',    emoji: '🏨', category: 'Travel',    amount:   113.24 },
-  { id: 't063', day: 26, time: '11:57', merchant: 'Glue Store',                emoji: '👟', category: 'Shopping',  amount:    78.83 },
-  { id: 't064', day: 26, time: '12:12', merchant: 'Cornersmith',               emoji: '🥪', category: 'Food',      amount:    23.27 },
-  { id: 't065', day: 26, time: '15:26', merchant: 'Better Read Than Dead',     emoji: '📚', category: 'Gifts',     amount:    28.75 },
-  { id: 't066', day: 26, time: '17:18', merchant: 'Opal top-up',               emoji: '🚇', category: 'Transport', amount:    19.75 },
-  { id: 't067', day: 26, time: '21:08', merchant: 'Ho Jiak',                   emoji: '🍜', category: 'Food',      amount:    64.41 },
-  { id: 't068', day: 27, time: '08:18', merchant: 'Lune',                      emoji: '🥐', category: 'Food',      amount:    11.83 },
-  { id: 't069', day: 27, time: '16:34', merchant: 'Train to Newcastle',        emoji: '🚄', category: 'Travel',    amount:    34.50 },
-  { id: 't070', day: 27, time: '17:19', merchant: 'Massage',                   emoji: '💆', category: 'Wellness',  amount:    95.57 },
-  { id: 't071', day: 27, time: '19:16', merchant: 'Woolworths',                emoji: '🥬', category: 'Groceries', amount:    30.12 },
-  { id: 't072', day: 28, time: '10:12', merchant: 'Fish market',               emoji: '🐟', category: 'Groceries', amount:    34.50 },
-  { id: 't073', day: 28, time: '10:54', merchant: 'Sonoma',                    emoji: '🥐', category: 'Food',      amount:    14.21 },
-  { id: 't074', day: 28, time: '18:00', merchant: 'Sauna House',               emoji: '🔥', category: 'Wellness',  amount:    47.00 },
-  { id: 't075', day: 28, time: '19:27', merchant: 'Mary\'s',                   emoji: '🍔', category: 'Food',      amount:    27.00 },
-  { id: 't076', day: 30, time: '09:00', merchant: 'Lune',                      emoji: '🥐', category: 'Food',      amount:    10.23 },
-  { id: 't077', day: 30, time: '14:22', merchant: 'Single O',                  emoji: '☕', category: 'Food',      amount:     6.49 },
-];
+  { id: 't055', day: 21, time: '20:03', merchant: 'Ho Jiak',                   emoji: '🍜', category: 'Food',      amount:    64.50 },];
 
-  global.MC_DATA = { MONTH, PREVIOUS_MONTH_TOTAL, CATEGORIES, FILTERS, TRANSACTIONS };
+  global.MC_DATA = { MONTH, TODAY, PREVIOUS_MONTH_TOTAL, CATEGORIES, FILTERS, TRANSACTIONS };
 })(window);

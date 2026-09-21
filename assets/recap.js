@@ -14,6 +14,8 @@
   var money = MC.money;
 
   var STEPS = 5;
+  /* the month is still running, so the story must not claim it is over */
+  var RUNNING = (D.TODAY || 30) < 30;
   var TREAT_MAX = 15;                               /* a coffee, a lamington */
   var TREAT_CATEGORIES = ['Food', 'Fun', 'Gifts'];
 
@@ -97,12 +99,13 @@
     /* 1 · the number */
     function () {
       return '<p class="rc-eyebrow">Money Calendar · 2026</p>' +
-        '<h2 class="rc-h">September,<br>done.</h2>' +
+        '<h2 class="rc-h">September,<br>' + (RUNNING ? 'so far.' : 'done.') + '</h2>' +
         '<p class="rc-money">' + money(Math.round(STORY.total)) + '<sub>spent</sub></p>' +
         '<ul class="rc-facts">' +
           '<li><b>' + STORY.count + '</b> transactions</li>' +
           '<li><b>' + F.spendDays.length + '</b> days with damage</li>' +
-          '<li>↓ <b>' + Math.abs(STORY.change) + '%</b> from August</li>' +
+          '<li>↓ <b>' + Math.abs(STORY.change) + '%</b> from August' +
+            (RUNNING ? ' to date' : '') + '</li>' +
         '</ul>';
     },
 
