@@ -412,7 +412,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 
 /* puffy, die-cut: the one layer that is not paper */
-.e3 {
+.e3,
+.cat-row .emoji,
+.i-card .mark {
   display: inline-block;
   line-height: 1;
   filter:
@@ -810,14 +812,18 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 .cat-row {
   display: grid;
-  grid-template-columns: 24px 1fr auto;
+  grid-template-columns: 30px 1fr auto;
   align-items: center;
-  gap: 12px;
-  padding: 11px 0;
+  gap: 13px;
+  padding: 12px 0;
   border-bottom: 1px solid var(--rule);
 }
 .cat-row:last-child { border-bottom: 0; }
-.cat-row .emoji { font-size: 18px; }
+.cat-row .emoji {
+  font-size: 23px;
+  transform: rotate(var(--tilt, -8deg));
+}
+.cat-row:nth-child(even) .emoji { --tilt: 7deg; }
 .cat-row .name { font-size: 16px; }
 .cat-row .bar {
   display: block;
@@ -860,7 +866,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
   color: var(--sticker-ink);
   box-shadow: 0 0 0 2.5px var(--sticker-ink), 3px 4px 0 var(--sticker-ink);
 }
-.i-card .mark { font-size: 22px; line-height: 1; display: block; margin-bottom: 12px; }
+.i-card .mark {
+  font-size: 26px;
+  margin-bottom: 13px;
+  transform: rotate(-9deg);
+}
+.i-card:nth-child(even) .mark { transform: rotate(8deg); }
 .i-card .k {
   font-family: var(--font-mono);
   font-size: 10.5px;

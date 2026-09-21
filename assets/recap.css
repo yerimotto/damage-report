@@ -291,9 +291,13 @@
   transform: rotate(var(--spin));
   font-size: calc(var(--size) / 3.1);
   font-style: normal;
+  overflow: visible;
   animation: rc-pop .62s cubic-bezier(.34, 1.56, .64, 1) backwards;
   animation-delay: var(--delay);
 }
+.rc-cell i .e3 { transform: rotate(-8deg); }
+.rc-cell:nth-child(even) i .e3 { transform: rotate(7deg); }
+
 .rc-cell b {
   font-family: var(--font-mono);
   font-size: 12px;

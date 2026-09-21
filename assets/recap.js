@@ -137,7 +137,8 @@
         var size = Math.round(30 + 3.6 * c.pct);
         var tone = i === 0 ? 4 : i === 1 ? 3 : i === 2 ? 2 : 1;
         return '<span class="rc-cell">' +
-          '<i style="' + blobStyle(tone, size, i + 11, 90 + i * 90) + '">' + c.emoji + '</i>' +
+          '<i style="' + blobStyle(tone, size, i + 11, 90 + i * 90) + '">' +
+            '<span class="e3">' + c.emoji + '</span></i>' +
           '<b>' + c.name + '<em>' + c.pct + '%</em></b></span>';
       }).join('');
 
@@ -193,7 +194,8 @@
         '<p class="rc-quote">“Lives for dinner reservations and believes Saturday ' +
           'has no consequences.”</p>' +
         '<div class="rc-traits">' + traits.map(function (t) {
-          return '<span class="rc-chip"><span aria-hidden="true">' + t[0] + '</span> ' + t[1] + '</span>';
+          return '<span class="rc-chip"><span class="e3" aria-hidden="true">' + t[0] +
+            '</span> ' + t[1] + '</span>';
         }).join('') + '</div>' +
         '<p class="rc-rarity">' + STORY.rarity + ' <span class="rc-pips">' + pips + '</span></p>' +
         '<div class="rc-actions">' +

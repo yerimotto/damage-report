@@ -84,9 +84,12 @@ The one thing on the page that isn't paper is the sticker layer, and that's
 the point: every "oh dear" day wears one stuck over its corner (💀 for the
 worst day in the current view, 💸 for the rest), and selected filters, badges,
 the recap findings and the creature are
-die-cut stickers with a hard black keyline and an offset shadow, and emoji get
-a CSS treatment — a white edge traced round the glyph, a hard lip, then a cast
-shadow — so they read as puffy vinyl sitting on top of the page. The day
+die-cut stickers with a hard black keyline and an offset shadow. Every emoji
+that carries meaning — the calendar markers, the receipt's biggest buys, the
+recap's category icons and evidence marks, the badge medals and the creature's
+traits — gets the same CSS treatment: a white edge traced round the glyph, a
+hard lip, then a cast shadow, so it reads as puffy vinyl sitting on the page
+rather than a character typed into it. The day
 receipt is taped into the journal at both corners.
 
 Ring wobble is seeded per day, so a day keeps its silhouette between renders.
