@@ -336,6 +336,9 @@ var TIER_SIZE_SM = ['0%', '46%', '62%', '78%', '92%'];
     }
     if (ubers >= 2) return ubers + ' Ubers in one day. Your legs are reportedly fine.';
     if (food >= 4) return food + ' separate food decisions. A tasting menu of your own design.';
+    if (txns.length >= 9) {
+      return txns.length + ' separate transactions in one day. Death by a thousand taps.';
+    }
     if (txns.length === 1) return 'One transaction, all day. Frankly, heroic.';
     if (lateHour >= 22) {
       return 'The ' + clock(last.time) + ' ' + biggest.merchant.toLowerCase() +
@@ -391,8 +394,10 @@ var TIER_SIZE_SM = ['0%', '46%', '62%', '78%', '92%'];
     html += '<div class="r-note"><span class="k">Note</span><p>' +
       (txns.length
         ? insightFor(day, txns, total)
-        : 'One of ' + MONTH_FACTS.noSpend.length +
-          ' no-spend days this month. Nothing happened, financially.') +
+        : (MONTH_FACTS.noSpend.length === 1
+            ? 'The only no-spend day this month. Nothing happened, financially.'
+            : 'One of ' + MONTH_FACTS.noSpend.length +
+              ' no-spend days this month. Nothing happened, financially.')) +
       '</p></div>' +
       '<div class="r-rule"></div>' +
       '<div class="r-kv"><span>Date</span><b>' + pad(day) + '-09-2026</b></div>' +
@@ -611,7 +616,8 @@ var TIER_SIZE_SM = ['0%', '46%', '62%', '78%', '92%'];
     var cards = [
       ['💀', 'Most expensive day', WEEKDAYS[weekdayOf(worstDay)] + ' ' + ordinal(worstDay),
         money(Math.round(MONTH_FACTS.totals[worstDay]))],
-      ['🧘', 'No-spend days', MONTH_FACTS.noSpend.length + ' days',
+      ['🧘', 'No-spend days',
+        MONTH_FACTS.noSpend.length + (MONTH_FACTS.noSpend.length === 1 ? ' day' : ' days'),
         'the ' + MONTH_FACTS.noSpend.map(ordinal).join(', ')],
       ['🔁', 'Repeat offender', MONTH_FACTS.repeat, repeat.count + ' transactions · ' +
         money(Math.round(repeat.total))],

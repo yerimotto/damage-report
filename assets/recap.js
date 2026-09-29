@@ -32,6 +32,10 @@
       return MC.weekdayOf(x.day) >= 4 ? t + x.amount : t;   /* Fri, Sat, Sun */
     }, 0);
     var weekendShare = Math.round((weekendSpend / total) * 100);
+    var weekdayShare = 100 - weekendShare;
+    /* Some months lean to the weekend and some do not. The story follows
+       whichever way this one actually went. */
+    var weekendMonth = weekendShare >= 50;
 
     var treats = TX.filter(function (t) {
       return t.amount <= TREAT_MAX && TREAT_CATEGORIES.indexOf(t.category) >= 0;
@@ -52,18 +56,39 @@
     var worstTotal = F.totals[F.worst];
     var peak = F.dangerous;
 
-    /* the rarer the skew, the rarer the creature */
-    var rarity = weekendShare >= 85 ? ['LEGENDARY', 4]
-      : weekendShare >= 70 ? ['RARE', 3]
-      : weekendShare >= 50 ? ['UNCOMMON', 2]
+    /* the more of the month one category swallowed, the rarer the creature */
+    var topShare = categories[0].pct;
+    var rarity = topShare >= 40 ? ['LEGENDARY', 4]
+      : topShare >= 32 ? ['RARE', 3]
+      : topShare >= 25 ? ['UNCOMMON', 2]
       : ['COMMON', 1];
+
+    /* A small, fixed cast. First one whose test passes gets the month. */
+    var pattern = weekendMonth
+      ? ['\uD83D\uDD25', 'Weekend Energy']
+      : ['\uD83D\uDCC5', MC.WEEKDAYS[peak] + ' Energy'];
+    var cast = [
+      [weekendShare >= 55, 'The Weekend Menace',
+       'Lives for dinner reservations and believes Saturday has no consequences.'],
+      [categories[0].name === 'Food' && topShare >= 28, 'The Little Treat Goblin',
+       'Has never once walked past a coffee. Dinner is a decision made at 7pm, by someone else.'],
+      [categories[0].name === 'Shopping' && topShare >= 25, 'The Cart Filler',
+       'Adds to basket as a coping mechanism. The basket always wins.'],
+      [true, 'The Creature of Habit',
+       'Same coffee, same shop, same walk. Genuinely unbothered by novelty.']
+    ];
+    var character = cast.filter(function (c) { return c[0]; })[0];
 
     return {
       total: total,
       count: TX.length,
       change: Math.round((1 - total / D.PREVIOUS_MONTH_TOTAL) * 100),
       weekendShare: weekendShare,
+      weekdayShare: weekdayShare,
+      weekendMonth: weekendMonth,
       weekendSpend: weekendSpend,
+      character: character,
+      pattern: pattern,
       peak: peak,
       peakName: MC.WEEKDAYS[peak],
       treats: treats.length,
@@ -78,8 +103,11 @@
         ['✨', 'Little Treat Enjoyer',
           treats.length + ' little treats this month, ' + money(Math.round(treats.reduce(
             function (t, x) { return t + x.amount; }, 0))) + ' of small joy'],
-        ['🔥', 'Weekend Menace',
-          weekendShare + '% of your spending happened Friday to Sunday'],
+        weekendMonth
+          ? ['🔥', 'Weekend Menace',
+             weekendShare + '% of your spending happened Friday to Sunday']
+          : ['🗓', 'Weekday Warrior',
+             weekdayShare + '% of your spending happened Monday to Thursday'],
         ['💀', 'Financial Jumpscare',
           'One day hit ' + money(Math.round(worstTotal)) + ' — ' +
           (worstTotal / F.average).toFixed(1) + '× an ordinary day']
@@ -122,12 +150,18 @@
           '<span>' + letters[i] + '</span></span>';
       }).join('');
 
-      return '<p class="rc-eyebrow">The pattern</p>' +
-        '<h2 class="rc-say">September was a <em>weekend</em> month.</h2>' +
-        '<div class="rc-week">' + week + '</div>' +
-        '<p class="rc-p"><b>' + STORY.weekendShare + '%</b> of everything you spent happened ' +
+      var claim = STORY.weekendMonth
+        ? '<p class="rc-p"><b>' + STORY.weekendShare + '%</b> of everything you spent happened ' +
           'between Friday and Sunday. That is ' + money(Math.round(STORY.weekendSpend)) +
-          ' of weekend.</p>' +
+          ' of weekend.</p>'
+        : '<p class="rc-p"><b>' + STORY.weekdayShare + '%</b> of everything you spent happened ' +
+          'between Monday and Thursday. The weekend barely got a look in.</p>';
+
+      return '<p class="rc-eyebrow">The pattern</p>' +
+        '<h2 class="rc-say">September was a <em>' +
+          (STORY.weekendMonth ? 'weekend' : 'weekday') + '</em> month.</h2>' +
+        '<div class="rc-week">' + week + '</div>' +
+        claim +
         '<p class="rc-p">Your most dangerous day: <b>' + STORY.peakName + ' 💀</b></p>';
     },
 
@@ -172,7 +206,7 @@
       var traits = [
         ['✨', 'Little Treat Enjoyer'],
         [STORY.categories[0].emoji, STORY.categories[0].name + ' Motivated'],
-        ['🔥', 'Weekend Energy']
+        STORY.pattern
       ];
       var pips = '';
       for (var i = 0; i < 4; i++) {
@@ -190,9 +224,8 @@
               t[0] + '</span>';
           }).join('') +
         '</div>' +
-        '<h2 class="rc-name">The Weekend Menace</h2>' +
-        '<p class="rc-quote">“Lives for dinner reservations and believes Saturday ' +
-          'has no consequences.”</p>' +
+        '<h2 class="rc-name">' + STORY.character[1] + '</h2>' +
+        '<p class="rc-quote">“' + STORY.character[2] + '”</p>' +
         '<div class="rc-traits">' + traits.map(function (t) {
           return '<span class="rc-chip"><span class="e3" aria-hidden="true">' + t[0] +
             '</span> ' + t[1] + '</span>';
@@ -317,6 +350,7 @@
     var collect = document.getElementById('rcCollect');
     var share = document.getElementById('rcShare');
     var already = collected().indexOf('2026-09') >= 0;
+    var who = STORY.character[1];
 
     if (already) {
       collect.classList.add('got');
@@ -331,9 +365,8 @@
       } catch (e) { /* private window — the button still does its bit */ }
       collect.classList.add('got');
       collect.textContent = '✓ In your collection';
-      toast(have.length === 1
-        ? 'The Weekend Menace joins your collection. 1 Spendy so far.'
-        : 'The Weekend Menace joins your collection. ' + have.length + ' Spendys so far.');
+      toast(who + ' joins your collection. ' + have.length +
+        (have.length === 1 ? ' Spendy so far.' : ' Spendys so far.'));
     });
 
     share.addEventListener('click', function () {
