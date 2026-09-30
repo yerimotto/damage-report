@@ -5,6 +5,7 @@
    ========================================================================== */
 
 .rc {
+  container-type: inline-size;
   position: fixed;
   inset: 0;
   z-index: 900;
@@ -166,7 +167,7 @@
   margin: 0;
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: calc(clamp(2.4rem, 9.5vw, 3.9rem) * var(--hand-scale));
+  font-size: calc(clamp(2.4rem, 9.5cqi, 3.9rem) * var(--hand-scale));
   line-height: .84;
   letter-spacing: 0;
   text-wrap: balance;
@@ -178,7 +179,7 @@
   margin: 0;
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: calc(clamp(1.6rem, 6vw, 2.3rem) * var(--hand-scale));
+  font-size: calc(clamp(1.6rem, 6cqi, 2.3rem) * var(--hand-scale));
   line-height: .96;
   letter-spacing: 0;
   text-wrap: balance;
@@ -186,7 +187,7 @@
 
 .rc-p {
   margin: 0;
-  font-size: clamp(1rem, 3.4vw, 1.12rem);
+  font-size: clamp(1rem, 3.4cqi, 1.12rem);
   line-height: 1.5;
   color: var(--s-dim);
   text-wrap: pretty;
@@ -200,7 +201,7 @@
   margin: 0;
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: calc(clamp(3rem, 14vw, 5.6rem) * var(--hand-scale));
+  font-size: calc(clamp(3rem, 14cqi, 5.6rem) * var(--hand-scale));
   line-height: .76;
   white-space: nowrap;
   letter-spacing: .01em;
@@ -471,7 +472,7 @@
   text-align: center;
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: calc(clamp(1.9rem, 7.6vw, 2.9rem) * var(--hand-scale));
+  font-size: calc(clamp(1.9rem, 7.6cqi, 2.9rem) * var(--hand-scale));
   line-height: .9;
   letter-spacing: 0;
   text-wrap: balance;
@@ -481,7 +482,7 @@
   margin: 0;
   text-align: center;
   font-family: var(--font-display);
-  font-size: calc(clamp(1rem, 3.8vw, 1.16rem) * var(--hand-scale));
+  font-size: calc(clamp(1rem, 3.8cqi, 1.16rem) * var(--hand-scale));
   line-height: 1.1;
   color: var(--s-dim);
   text-wrap: pretty;
@@ -616,12 +617,10 @@
   font-size: 15px;
 }
 
-@media (max-width: 620px) {
-  .rc-stage { padding: 20px 20px 10px; gap: 15px; }
-  .rc-week { height: 124px; }
-  .rc-creature { width: 142px; height: 142px; }
-  .rc-launch { padding: 17px 18px; }
-}
+:root[data-frame="phone"] .rc-stage { padding: 20px 20px 10px; gap: 15px; }
+:root[data-frame="phone"] .rc-week { height: 124px; }
+:root[data-frame="phone"] .rc-creature { width: 142px; height: 142px; }
+:root[data-frame="phone"] .rc-launch { padding: 17px 18px; }
 
 @media (prefers-reduced-motion: reduce) {
   .rc::before, .rc-creature, .rc-eye, .rc-trait-orbit, .rc-hint { animation: none; }

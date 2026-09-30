@@ -693,6 +693,35 @@ var TIER_SIZE_SM = ['0%', '46%', '62%', '78%', '92%'];
     renderCalendar();
   });
 
+  /* ---------- phone frame ----------------------------------------------- */
+
+  /* The prototype is designed for a phone, so it opens phone-width even on a
+     desktop, standing in a device frame. The toggle switches to full width
+     and the choice is remembered; a narrow window overrides both. */
+  var FRAME_KEY = 'mc-frame';
+  var frameBtn = document.getElementById('frameToggle');
+  var narrow = window.matchMedia('(max-width: 620px)');
+  var framePref = 'phone';
+  try { framePref = localStorage.getItem(FRAME_KEY) || 'phone'; } catch (e) { /* private window */ }
+
+  function applyFrame() {
+    var mode = narrow.matches ? 'phone' : framePref;
+    document.documentElement.dataset.frame = mode;
+    frameBtn.setAttribute('aria-pressed', String(mode === 'phone'));
+    frameBtn.textContent = mode === 'phone' ? '🖥' : '📱';
+    frameBtn.setAttribute('aria-label',
+      mode === 'phone' ? 'Show at full width' : 'Show at phone width');
+    frameBtn.title = frameBtn.getAttribute('aria-label');
+  }
+
+  frameBtn.addEventListener('click', function () {
+    framePref = document.documentElement.dataset.frame === 'phone' ? 'wide' : 'phone';
+    try { localStorage.setItem(FRAME_KEY, framePref); } catch (e) { /* private window */ }
+    applyFrame();
+  });
+  narrow.addEventListener('change', applyFrame);
+  applyFrame();
+
   /* ---------- boot ------------------------------------------------------ */
 
   /* The recap story (assets/recap.js) reads the same facts, so the two

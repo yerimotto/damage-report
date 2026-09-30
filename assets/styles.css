@@ -160,7 +160,10 @@ body::before {
 
 button { font: inherit; color: inherit; cursor: pointer; }
 
+/* Containers, so type scales with the frame it sits in rather than the
+   window. On a real phone the frame is the window, so nothing changes. */
 .shell {
+  container-type: inline-size;
   max-width: 940px;
   margin: 0 auto;
   padding-inline: 20px;
@@ -188,7 +191,24 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .wordmark b { color: var(--ink); font-weight: 500; }
 
+.masthead-right { display: flex; align-items: center; gap: 10px; }
+
 .views { display: flex; gap: 4px; }
+
+.frame-toggle {
+  background: none;
+  border: 1.5px solid var(--rule);
+  border-radius: 999px;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+  transition: border-color .16s ease, transform .16s ease;
+}
+.frame-toggle:hover { border-color: var(--ink-faint); transform: scale(1.08); }
 
 .view-tab {
   background: none;
@@ -215,7 +235,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   font-family: var(--font-display);
   font-variation-settings: var(--wonk);
   font-weight: 600;
-  font-size: calc(clamp(1.6rem, 4.5vw, 2.3rem) * var(--hand-scale));
+  font-size: calc(clamp(1.6rem, 4.5cqi, 2.3rem) * var(--hand-scale));
   line-height: 1;
   letter-spacing: 0;
   margin: 0 0 2px;
@@ -226,7 +246,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   font-family: var(--font-display);
   font-variation-settings: 'SOFT' 60, 'WONK' 1;
   font-weight: 400;
-  font-size: calc(clamp(3.4rem, 14vw, 6.2rem) * var(--hand-scale));
+  font-size: calc(clamp(3.4rem, 14cqi, 6.2rem) * var(--hand-scale));
   line-height: .78;
   letter-spacing: .01em;
   margin: 0;
@@ -235,7 +255,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .hero-total sub {
   font-family: var(--font-ui);
-  font-size: clamp(.9rem, 2.6vw, 1.05rem);
+  font-size: clamp(.9rem, 2.6cqi, 1.05rem);
   font-weight: 500;
   letter-spacing: 0;
   vertical-align: baseline;
@@ -367,7 +387,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 .amt {
   font-family: var(--font-mono);
-  font-size: clamp(9px, 1.1vw, 12px);
+  font-size: clamp(9px, 1.1cqi, 12px);
   font-variant-numeric: tabular-nums;
   letter-spacing: -.02em;
   color: var(--ink);
@@ -394,7 +414,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   top: -3px;
   left: 3px;
   z-index: 3;
-  font-size: clamp(16px, 2.4vw, 26px);
+  font-size: clamp(16px, 2.4cqi, 26px);
   transform: rotate(-13deg);
   filter:
     drop-shadow(1px 0 0 var(--paper)) drop-shadow(-1px 0 0 var(--paper))
@@ -474,6 +494,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 /* the paper itself — --tear is a torn-edge polygon built once in app.js */
 .receipt {
+  container-type: inline-size;
   display: flex;
   flex-direction: column;
   max-height: 88vh;
@@ -686,7 +707,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   letter-spacing: .22em;
 }
 .r-total .v {
-  font-size: clamp(1.9rem, 8vw, 2.5rem);
+  font-size: clamp(1.9rem, 8cqi, 2.5rem);
   letter-spacing: -.02em;
   font-variant-numeric: tabular-nums;
   font-weight: 500;
@@ -800,7 +821,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   font-family: var(--font-display);
   font-variation-settings: 'SOFT' 60, 'WONK' 1;
   font-weight: 800;
-  font-size: calc(clamp(3.4rem, 14vw, 6.2rem) * var(--hand-scale));
+  font-size: calc(clamp(3.4rem, 14cqi, 6.2rem) * var(--hand-scale));
   line-height: .78;
   letter-spacing: .01em;
   margin: 0 0 8px;
@@ -949,21 +970,76 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 /* ---------- responsive -------------------------------------------------- */
 
-@media (max-width: 620px) {
-  .shell { padding-inline: 16px; }
-  .weekdays, .grid { gap: 5px; }
-  .day { border-radius: 10px; padding: 2px 3px; }
-  .amt { display: none; }
-  .ring { height: var(--size-sm); }
-  .date { font-size: 9.5px; }
-  .day .mark { top: -4px; left: 1px; font-size: 15px; }
-  .day[data-tier="4"] .date { padding-left: 13px; }
-  .wd-long { display: none; }
-  .wd-short { display: inline; }
-  .sheet { max-width: none; }
-  .r-scroll { padding-inline: 20px; }
-  .legend { gap: 10px; font-size: 9.5px; }
+/* ---------- phone layout ------------------------------------------------
+   Driven by an attribute rather than a media query, because the prototype is
+   designed for a phone and opens phone-width on a desktop too. app.js sets
+   the attribute; a narrow window always forces it.
+   ------------------------------------------------------------------------ */
+
+:root[data-frame="phone"] .shell { padding-inline: 16px; }
+:root[data-frame="phone"] .weekdays,
+:root[data-frame="phone"] .grid { gap: 5px; }
+:root[data-frame="phone"] .day { border-radius: 10px; padding: 2px 3px; }
+:root[data-frame="phone"] .amt { display: none; }
+:root[data-frame="phone"] .ring { height: var(--size-sm); }
+:root[data-frame="phone"] .date { font-size: 9.5px; }
+:root[data-frame="phone"] .day .mark { top: -4px; left: 1px; font-size: 15px; }
+:root[data-frame="phone"] .day[data-tier="4"] .date { padding-left: 13px; }
+:root[data-frame="phone"] .wd-long { display: none; }
+:root[data-frame="phone"] .wd-short { display: inline; }
+:root[data-frame="phone"] .sheet { max-width: var(--frame-w); }
+:root[data-frame="phone"] .r-scroll { padding-inline: 20px; }
+:root[data-frame="phone"] .legend { gap: 10px; font-size: 9.5px; }
+
+/* On a real phone the frame is simply the window. */
+:root { --frame-w: 100%; }
+
+/* On a desktop, stand the phone on a desk. Everything that positions against
+   the viewport — the drawer, the recap, the toast — is pulled into the frame
+   so nothing escapes the device. */
+@media (min-width: 621px) {
+  :root[data-frame="phone"] { --frame-w: 402px; --frame-gap: 26px; }
+
+  :root[data-frame="phone"] body {
+    background: #222A33;
+    background-image: none;
+  }
+
+  :root[data-frame="phone"] .shell {
+    width: var(--frame-w);
+    margin-inline: auto;
+    margin-block: var(--frame-gap);
+    min-height: calc(100vh - var(--frame-gap) * 2);
+    border-radius: 28px;
+    background: var(--paper);
+    background-image: radial-gradient(var(--dot) 1.3px, transparent 1.4px);
+    background-size: 20px 20px;
+    box-shadow: 0 34px 70px -34px rgb(0 0 0 / .7);
+  }
+
+  :root[data-frame="phone"] .sheet {
+    margin-bottom: var(--frame-gap);
+    border-radius: 0 0 28px 28px;
+  }
+
+  :root[data-frame="phone"] .rc {
+    left: 50%;
+    right: auto;
+    top: var(--frame-gap);
+    bottom: var(--frame-gap);
+    width: var(--frame-w);
+    transform: translateX(-50%);
+    border-radius: 28px;
+  }
+
+  :root[data-frame="phone"] .toast { bottom: calc(var(--frame-gap) + 22px); }
 }
+
+/* a narrow window is already a phone, so the switch has nothing to offer */
+@media (max-width: 620px) {
+  .frame-toggle { display: none; }
+}
+
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
