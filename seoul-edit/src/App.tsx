@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { BottomNav } from './components/BottomNav'
+import { ErrorBoundary } from './components/ErrorBoundary'
 import { parse, useHash } from './lib/router'
 import { ComingSoon } from './screens/ComingSoon'
 import { FitBuilderScreen } from './screens/FitBuilderScreen'
@@ -36,7 +37,7 @@ export default function App() {
 
   return (
     <div className="mx-auto min-h-dvh w-full max-w-[440px]">
-      {screen}
+      <ErrorBoundary resetKey={hash}>{screen}</ErrorBoundary>
       {isTab && <BottomNav active={route.name} />}
     </div>
   )

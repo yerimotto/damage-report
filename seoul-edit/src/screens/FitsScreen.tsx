@@ -38,7 +38,7 @@ export function FitsScreen() {
         </li>
         {fits.map((fit) => (
           <li key={fit.id}>
-            <Link to={{ name: 'fit', id: fit.id }} className="block active:opacity-70">
+            <Link to={{ name: 'fit', id: fit.id }} className="block w-full text-left active:opacity-70">
               <FlatLay
                 pieces={fit.pieceIds.flatMap((id) => byId.get(id) ?? [])}
                 image={fit.flatLayImage}

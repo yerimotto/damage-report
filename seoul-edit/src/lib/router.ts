@@ -31,33 +31,43 @@ export function href(route: Route): string {
 }
 
 /*
- * The current route lives in memory and is mirrored to the URL hash when the
- * host allows it. Sandboxed hosts (like an embedded preview) may refuse
- * history writes; navigation keeps working regardless.
+ * The current route lives in memory. Standalone, it's mirrored to the URL
+ * hash so reloads and the back button work. Embedded in another page (e.g. a
+ * claude.ai Artifact) the URL belongs to the host, so it's left alone.
  */
-let current = window.location.hash || '#/'
+const embedded = (() => {
+  try {
+    return window.self !== window.top
+  } catch {
+    return true
+  }
+})()
+
+let current = embedded ? '#/' : window.location.hash || '#/'
 const listeners = new Set<() => void>()
 const emit = () => listeners.forEach((l) => l())
 
 export function navigate(route: Route, opts: { replace?: boolean } = {}) {
   current = href(route)
-  try {
-    if (opts.replace) history.replaceState(null, '', current)
-    else history.pushState(null, '', current)
-  } catch {
-    // History is unavailable; the in-memory route is enough.
+  if (!embedded) {
+    try {
+      if (opts.replace) history.replaceState(null, '', current)
+      else history.pushState(null, '', current)
+    } catch {
+      // History is unavailable; the in-memory route is enough.
+    }
   }
   emit()
 }
 
-window.addEventListener('hashchange', () => {
-  current = window.location.hash || '#/'
-  emit()
-})
-window.addEventListener('popstate', () => {
-  current = window.location.hash || '#/'
-  emit()
-})
+if (!embedded) {
+  const sync = () => {
+    current = window.location.hash || '#/'
+    emit()
+  }
+  window.addEventListener('hashchange', sync)
+  window.addEventListener('popstate', sync)
+}
 
 const subscribe = (cb: () => void) => {
   listeners.add(cb)

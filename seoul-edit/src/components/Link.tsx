@@ -1,19 +1,21 @@
-import type { AnchorHTMLAttributes } from 'react'
-import { href, navigate, type Route } from '../lib/router'
+import type { ButtonHTMLAttributes } from 'react'
+import { navigate, type Route } from '../lib/router'
 
-type LinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & { to: Route }
+type LinkProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> & { to: Route }
 
-/** An anchor that routes in-app instead of letting the browser handle the hash. */
+/**
+ * In-app navigation. Rendered as a button rather than an <a href="#/…">, so
+ * hosts that intercept link clicks (embedded previews) can't hijack it.
+ */
 export function Link({ to, onClick, ...rest }: LinkProps) {
   return (
-    <a
+    <button
       {...rest}
-      href={href(to)}
+      type="button"
+      role="link"
       onClick={(e) => {
         onClick?.(e)
-        if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey) return
-        e.preventDefault()
-        navigate(to)
+        if (!e.defaultPrevented) navigate(to)
       }}
     />
   )
