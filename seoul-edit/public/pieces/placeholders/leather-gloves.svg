@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 84" width="112" height="168"><defs><filter id="soft" x="-10%" y="-10%" width="130%" height="130%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#5c4a33" flood-opacity="0.18"/></filter></defs><g filter="url(#soft)"><g transform="translate(10,-2) rotate(8 28 42)"><rect x="12" y="56" width="26" height="26" rx="3" fill="#141312"/>
+  <rect x="10" y="26" width="30" height="36" rx="10" fill="#141312"/>
+  <rect x="11" y="10" width="6.5" height="30" rx="3.2" fill="#141312"/><rect x="18.5" y="4" width="6.5" height="30" rx="3.2" fill="#141312"/><rect x="26" y="6" width="6.5" height="30" rx="3.2" fill="#141312"/><rect x="33.5" y="12" width="6.5" height="30" rx="3.2" fill="#141312"/>
+  <rect x="0" y="34" width="8" height="24" rx="4" transform="rotate(-28 6 50)" fill="#141312"/></g><g transform="translate(2,2)"><rect x="12" y="56" width="26" height="26" rx="3" fill="#2b2826"/>
+  <rect x="10" y="26" width="30" height="36" rx="10" fill="#2b2826"/>
+  <rect x="11" y="10" width="6.5" height="30" rx="3.2" fill="#2b2826"/><rect x="18.5" y="4" width="6.5" height="30" rx="3.2" fill="#2b2826"/><rect x="26" y="6" width="6.5" height="30" rx="3.2" fill="#2b2826"/><rect x="33.5" y="12" width="6.5" height="30" rx="3.2" fill="#2b2826"/>
+  <rect x="0" y="34" width="8" height="24" rx="4" transform="rotate(-28 6 50)" fill="#2b2826"/><path d="M14,64 L36,64" stroke="#000" stroke-opacity=".5"/></g></g></svg>

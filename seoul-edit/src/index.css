@@ -1,0 +1,122 @@
+@import 'tailwindcss';
+
+/* ---- Design tokens ------------------------------------------------------ */
+@theme {
+  --color-cream: #fbf8f1;
+  --color-ink: #1c1a17;
+  --color-ink-2: #6e675d;
+  --color-muted: #8a8277;
+  --color-hairline: #e4ddd1;
+  --color-pink: #e33de0;
+  --color-pink-soft: #f3b4ec;
+  --color-pink-blush: #f6cfee;
+  --color-pink-line: #ebb5e3;
+
+  --font-serif: 'Instrument Serif', 'Times New Roman', serif;
+  --font-sans: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 26px;
+  --spacing-btn: 56px;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    margin: 0;
+    background: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  button {
+    cursor: pointer;
+  }
+}
+
+/* ---- Type + component primitives --------------------------------------- */
+@utility label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+@utility serif-display {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+}
+
+@utility text-trip-gradient {
+  background: linear-gradient(180deg, var(--color-pink) 0%, var(--color-pink-soft) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility card-new-fit {
+  border-radius: var(--radius-card);
+  background: linear-gradient(180deg, #ffffff 0%, var(--color-pink-blush) 100%);
+  border: 1px solid var(--color-pink-line);
+  box-shadow: 0 10px 24px -12px rgb(227 61 224 / 0.35);
+}
+
+@utility btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: var(--spacing-btn);
+  padding: 0 24px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  transition:
+    opacity 150ms,
+    transform 150ms;
+  &:active {
+    transform: scale(0.98);
+  }
+  &:disabled {
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+@utility btn-primary {
+  background: var(--color-ink);
+  color: var(--color-cream);
+  &:disabled {
+    background: var(--color-hairline);
+    color: var(--color-muted);
+  }
+}
+
+@utility btn-secondary {
+  background: transparent;
+  color: var(--color-ink);
+  border: 1px solid var(--color-ink);
+}
+
+@utility frosted {
+  background: rgb(255 255 255 / 0.72);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+}
+
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
