@@ -1,4 +1,4 @@
 node_modules
 dist
 *.local
-dist-artifact
+dist-prototype

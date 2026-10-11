@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -b",
-    "build:artifact": "npm run build && node scripts/build-artifact.mjs"
+    "build:prototype": "node scripts/inline-prototype.mjs"
   },
   "dependencies": {
     "lucide-react": "^1.55.0",

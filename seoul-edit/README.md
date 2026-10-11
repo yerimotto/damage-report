@@ -6,6 +6,27 @@ A capsule outfit planner for a trip: pack ~14 pieces, style them into a handful 
 React + Vite + TypeScript + Tailwind v4. Mobile-first at 440px, installable as a PWA.
 Data lives in `localStorage` under `seoul-edit:v2` (no backend yet).
 
+## The prototype
+
+`prototype/` is a clickable prototype in plain HTML, CSS and JavaScript, built the
+same way as the Money Calendar: no framework, no build step. Open
+`prototype/index.html` in a browser. On a desktop it stands in a phone frame
+(the button top right switches to full width).
+
+| File | What's in it |
+| --- | --- |
+| `prototype/index.html` | The shell and the bottom tab bar |
+| `prototype/assets/styles.css` | Design tokens, every screen, the phone frame |
+| `prototype/assets/app.js` | Screens, flat-lay collage, builder, saving to localStorage |
+| `prototype/assets/data.js` | The closet and fits from `closet.json` |
+| `prototype/pieces/` | The cutouts, resized to 560px WebP |
+
+`npm run build:prototype` packs it into one self-contained file,
+`dist-prototype/the-seoul-edit.html`, with every image embedded. That's the file
+published as the shareable link.
+
+## The React app
+
 ```bash
 npm install
 npm run dev        # http://localhost:5173

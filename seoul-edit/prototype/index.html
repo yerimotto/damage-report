@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Seoul Edit</title>
+<meta name="description" content="A capsule outfit planner for December in Seoul.">
+<meta name="theme-color" content="#FBF8F1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<button type="button" class="frame-toggle" id="frameToggle" aria-pressed="true"></button>
+
+<div class="shell">
+  <div class="screen" id="screen" aria-live="polite"></div>
+
+  <nav class="tabbar" id="tabbar" aria-label="Sections">
+    <div class="tabbar-pill">
+      <button type="button" class="tab" data-go="fits"><span data-icon="sparkles"></span>Fits</button>
+      <button type="button" class="tab" data-go="closet"><span data-icon="shirt"></span>Closet</button>
+      <button type="button" class="tab" data-go="days"><span data-icon="calendar"></span>Days</button>
+      <button type="button" class="tab" data-go="pack"><span data-icon="luggage"></span>Pack</button>
+    </div>
+  </nav>
+</div>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
