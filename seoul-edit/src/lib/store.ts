@@ -2,14 +2,14 @@ import { useSyncExternalStore } from 'react'
 import { starterData } from '../data/starter'
 import type { AppData, Fit } from '../types'
 
-const KEY = 'seoul-edit:v1'
+const KEY = 'seoul-edit:v2'
 
 function load(): AppData {
   try {
     const raw = localStorage.getItem(KEY)
     if (raw) {
       const parsed = JSON.parse(raw) as AppData
-      if (parsed?.version === 1 && Array.isArray(parsed.fits) && Array.isArray(parsed.pieces)) return parsed
+      if (parsed?.version === 2 && Array.isArray(parsed.fits) && Array.isArray(parsed.pieces)) return parsed
     }
   } catch {
     // Private mode or corrupt JSON: fall through to the starter closet.

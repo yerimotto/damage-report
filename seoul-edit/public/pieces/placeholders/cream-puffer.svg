@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 185 215" width="370" height="430"><defs><linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6efe2"/><stop offset="1" stop-color="#ddd0ba"/></linearGradient><filter id="soft" x="-10%" y="-10%" width="130%" height="130%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#5c4a33" flood-opacity="0.18"/></filter></defs><g filter="url(#soft)">
-  <path d="M68,10 L26,26 Q8,32 6,64 L2,184 L32,188 L42,96 L38,200 L147,200 L143,96 L153,188 L183,184 L179,64 Q177,32 159,26 L117,10 Z" fill="url(#b)"/>
-  <g stroke="#c9b99f" stroke-width="1.4" fill="none" stroke-linecap="round">
-    <path d="M42,56 Q92.5,62 143,56"/><path d="M42,92 Q92.5,98 143,92"/><path d="M42,128 Q92.5,134 143,128"/><path d="M42,164 Q92.5,170 143,164"/>
-    <path d="M12,70 L40,74"/><path d="M145,74 L173,70"/><path d="M8.666666666666666,110 L40,114"/><path d="M145,114 L176.33333333333334,110"/><path d="M5.333333333333333,150 L40,154"/><path d="M145,154 L179.66666666666666,150"/>
-    <line x1="92.5" y1="24" x2="92.5" y2="200" stroke="#b9a88d"/>
-  </g>
-  <path d="M66,4 Q92.5,14 119,4 L120,24 Q92.5,34 65,24 Z" fill="#efe6d6" stroke="#cdbfa6" stroke-width="1"/></g></svg>

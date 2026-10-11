@@ -16,6 +16,8 @@ export interface Fit {
   note: string
   /** Optional custom flat-lay photo; otherwise the collage is generated. */
   flatLayImage?: string
+  /** Styling reference photo the fit was built from, e.g. /looks/look-1.png */
+  reference?: string
   /** ISO dates (YYYY-MM-DD) this fit is planned for. */
   dates: string[]
 }
@@ -28,7 +30,7 @@ export interface Trip {
 }
 
 export interface AppData {
-  version: 1
+  version: 2
   trip: Trip
   pieces: Piece[]
   fits: Fit[]

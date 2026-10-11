@@ -4,7 +4,7 @@ A capsule outfit planner for a trip: pack ~14 pieces, style them into a handful 
 "fits", and repeat them. First trip: December in Seoul, −7° to 2°C.
 
 React + Vite + TypeScript + Tailwind v4. Mobile-first at 440px, installable as a PWA.
-Data lives in `localStorage` under `seoul-edit:v1` (no backend yet).
+Data lives in `localStorage` under `seoul-edit:v2` (no backend yet).
 
 ```bash
 npm install
@@ -22,14 +22,15 @@ npm run build      # typecheck + production build into dist/
 
 ## Clothing images
 
-Each starter piece points at `/pieces/<id>.png`. Drop a transparent PNG cutout
-with that name into `public/pieces/` and it replaces the bundled placeholder
-illustration (`public/pieces/placeholders/<id>.svg`) automatically:
+The closet comes from `closet.json`. Each piece points at `public/pieces/<id>.png`
+and each fit's styling reference at `public/looks/look-N.png`. Until a PNG is in
+place, the piece shows as a dashed tile with its name.
 
-`shearling-jacket` · `leather-coat` · `cream-puffer` · `cream-knit` ·
-`black-turtleneck` · `grey-knit` · `black-jeans` · `flared-trousers` ·
-`sheepskin-boots` · `western-boots` · `tan-tote` · `wool-scarf` ·
-`leather-gloves` · `gold-hoops`
+`brown-wool-coat` · `black-wool-coat` · `leather-trench` · `shearling-fur-jacket` ·
+`cream-vneck-knit` · `black-turtleneck` · `black-crewneck` · `brown-polo-knit` ·
+`mid-wash-wide-jeans` · `raw-denim-wide-jeans` · `black-straight-jeans` ·
+`beige-suede-skirt` · `riding-boots` · `pointed-heel-boots` · `brown-suede-loafers` ·
+`black-leather-tote` · `brown-suede-hobo` · `two-tone-scarf` · `wool-bucket-hat`
 
 ## Where things live
 
@@ -37,9 +38,9 @@ illustration (`public/pieces/placeholders/<id>.svg`) automatically:
 | --- | --- |
 | `src/index.css` | Design tokens (`@theme`) and primitives: `label`, `serif-display`, `btn-*`, `card-new-fit`, `frosted` |
 | `src/types.ts` | `Piece`, `Fit`, `Trip` |
-| `src/data/starter.ts` | Starter closet, six fits, the trip |
+| `src/data/starter.ts` | Starter closet (19 pieces), four fits, the trip |
 | `src/lib/store.ts` | localStorage-backed store + actions (`createFit`, `updateFit`, `deleteFit`, `reset`) |
 | `src/lib/router.ts` | Tiny hash router |
 | `src/components/FlatLay.tsx` | The auto collage (384×340 slot layout), reused for thumbnails |
 
-To start over with the starter data, clear the `seoul-edit:v1` key in localStorage.
+To start over with the starter data, clear the `seoul-edit:v2` key in localStorage.
