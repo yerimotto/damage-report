@@ -20,6 +20,6 @@ self.addEventListener('fetch', (event) => {
         }
         return res
       })
-      .catch(() => caches.match(event.request).then((hit) => hit || caches.match('/'))),
+      .catch(() => caches.match(event.request).then((hit) => hit || caches.match('./'))),
   )
 })

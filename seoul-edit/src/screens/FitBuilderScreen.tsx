@@ -21,6 +21,7 @@ export function FitBuilderScreen({ id }: { id?: string }) {
   const [selected, setSelected] = useState<string[]>(existing?.pieceIds ?? [])
   const [note, setNote] = useState(existing?.note ?? '')
   const [filter, setFilter] = useState<Filter>('All')
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
 
   const byId = useMemo(() => new Map(pieces.map((p) => [p.id, p])), [pieces])
   const selectedPieces = selected.flatMap((pid) => byId.get(pid) ?? [])
@@ -34,7 +35,7 @@ export function FitBuilderScreen({ id }: { id?: string }) {
   const toggle = (pid: string) =>
     setSelected((s) => (s.includes(pid) ? s.filter((x) => x !== pid) : [...s, pid]))
 
-  const close = () => (history.length > 1 ? history.back() : navigate({ name: 'fits' }))
+  const close = () => navigate(existing ? { name: 'fit', id: existing.id } : { name: 'fits' }, { replace: true })
 
   const save = () => {
     if (!canSave) return
@@ -48,7 +49,9 @@ export function FitBuilderScreen({ id }: { id?: string }) {
   }
 
   const remove = () => {
-    if (!existing || !confirm(`Delete ${existing.name}?`)) return
+    if (!existing) return
+    // First tap arms the button, second tap deletes (no native confirm dialog).
+    if (!confirmingDelete) return setConfirmingDelete(true)
     actions.deleteFit(existing.id)
     navigate({ name: 'fits' }, { replace: true })
   }
@@ -69,10 +72,14 @@ export function FitBuilderScreen({ id }: { id?: string }) {
           <button
             type="button"
             onClick={remove}
-            aria-label={`Delete ${existing.name}`}
-            className="-mr-2 flex h-11 w-11 items-center justify-center rounded-full text-ink-2 active:bg-hairline/60"
+            onBlur={() => setConfirmingDelete(false)}
+            aria-label={confirmingDelete ? `Tap again to delete ${existing.name}` : `Delete ${existing.name}`}
+            className={`-mr-2 flex h-11 items-center justify-center gap-1.5 rounded-full transition-colors ${
+              confirmingDelete ? 'bg-ink px-4 text-cream' : 'w-11 text-ink-2 active:bg-hairline/60'
+            }`}
           >
-            <Trash2 size={19} strokeWidth={1.5} />
+            <Trash2 size={confirmingDelete ? 15 : 19} strokeWidth={1.5} />
+            {confirmingDelete && <span className="label">Delete</span>}
           </button>
         ) : (
           <span className="w-11" />

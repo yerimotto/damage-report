@@ -9,6 +9,7 @@ createRoot(document.getElementById('root')!).render(
   </StrictMode>,
 )
 
-if ('serviceWorker' in navigator && import.meta.env.PROD) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js'))
+// Offline cache for the installed PWA; skipped when embedded in another page.
+if ('serviceWorker' in navigator && import.meta.env.PROD && window.self === window.top) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}))
 }

@@ -4,7 +4,8 @@ import { FlatLay } from '../components/FlatLay'
 import { PieceImage } from '../components/PieceImage'
 import { WeatherChip } from '../components/WeatherChip'
 import { alsoWornIn, plural, tempLabel } from '../lib/format'
-import { href, navigate } from '../lib/router'
+import { Link } from '../components/Link'
+import { navigate } from '../lib/router'
 import { useAppData } from '../lib/store'
 import { NotFound } from './NotFound'
 
@@ -22,7 +23,7 @@ export function FitDetailScreen({ id }: { id: string }) {
       <header className="flex items-center justify-between py-2">
         <button
           type="button"
-          onClick={() => (history.length > 1 ? history.back() : navigate({ name: 'fits' }))}
+          onClick={() => navigate({ name: 'fits' })}
           aria-label="Back"
           className="-ml-2 flex h-11 w-11 items-center justify-center rounded-full active:bg-hairline/60"
         >
@@ -57,12 +58,12 @@ export function FitDetailScreen({ id }: { id: string }) {
       </section>
 
       <BottomBar>
-        <a href={href({ name: 'fits' })} className="btn btn-secondary flex-1">
+        <Link to={{ name: 'fits' }} className="btn btn-secondary flex-1">
           All fits
-        </a>
-        <a href={href({ name: 'edit', id: fit.id })} className="btn btn-primary flex-1">
+        </Link>
+        <Link to={{ name: 'edit', id: fit.id }} className="btn btn-primary flex-1">
           Edit fit
-        </a>
+        </Link>
       </BottomBar>
     </main>
   )

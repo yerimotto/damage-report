@@ -1,5 +1,6 @@
 import { Calendar, Luggage, Shirt, Sparkles } from 'lucide-react'
-import { href, type Route } from '../lib/router'
+import type { Route } from '../lib/router'
+import { Link } from './Link'
 
 const TABS = [
   { name: 'fits', label: 'Fits', Icon: Sparkles },
@@ -15,9 +16,9 @@ export function BottomNav({ active }: { active: Route['name'] }) {
         {TABS.map(({ name, label, Icon }) => {
           const on = active === name
           return (
-            <a
+            <Link
               key={name}
-              href={href({ name } as Route)}
+              to={{ name } as Route}
               aria-current={on ? 'page' : undefined}
               className={`flex h-12 flex-1 items-center justify-center gap-1.5 rounded-full text-[13px] font-semibold transition-colors ${
                 on ? 'bg-ink text-cream' : 'text-ink-2'
@@ -25,7 +26,7 @@ export function BottomNav({ active }: { active: Route['name'] }) {
             >
               <Icon size={16} strokeWidth={1.5} />
               {label}
-            </a>
+            </Link>
           )
         })}
       </div>

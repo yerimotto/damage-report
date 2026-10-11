@@ -1,6 +1,6 @@
 import { Plus } from 'lucide-react'
 import { FlatLay } from '../components/FlatLay'
-import { href } from '../lib/router'
+import { Link } from '../components/Link'
 import { plural, tempLabel } from '../lib/format'
 import { useAppData } from '../lib/store'
 
@@ -28,24 +28,24 @@ export function FitsScreen() {
 
       <ul className="mt-9 grid grid-cols-3 gap-x-3 gap-y-6">
         <li>
-          <a
-            href={href({ name: 'new' })}
+          <Link
+            to={{ name: 'new' }}
             className="card-new-fit flex aspect-[384/340] w-full flex-col items-center justify-center gap-2 text-ink"
           >
             <Plus size={22} strokeWidth={1.25} />
             <span className="label">New fit</span>
-          </a>
+          </Link>
         </li>
         {fits.map((fit) => (
           <li key={fit.id}>
-            <a href={href({ name: 'fit', id: fit.id })} className="block active:opacity-70">
+            <Link to={{ name: 'fit', id: fit.id }} className="block active:opacity-70">
               <FlatLay
                 pieces={fit.pieceIds.flatMap((id) => byId.get(id) ?? [])}
                 image={fit.flatLayImage}
               />
               <p className="serif-display mt-3 text-[24px]">{fit.name}</p>
               <p className="mt-1 text-[12px] text-muted">{plural(fit.pieceIds.length, 'piece')}</p>
-            </a>
+            </Link>
           </li>
         ))}
       </ul>

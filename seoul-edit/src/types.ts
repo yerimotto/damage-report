@@ -5,7 +5,7 @@ export interface Piece {
   id: string
   name: string
   category: Category
-  /** Path to a transparent PNG cutout, e.g. /pieces/cream-knit.png */
+  /** Path to a transparent PNG cutout, relative to the app root, e.g. pieces/cream-vneck-knit.png */
   image: string
 }
 
@@ -16,7 +16,7 @@ export interface Fit {
   note: string
   /** Optional custom flat-lay photo; otherwise the collage is generated. */
   flatLayImage?: string
-  /** Styling reference photo the fit was built from, e.g. /looks/look-1.png */
+  /** Styling reference photo the fit was built from, e.g. looks/look-1.png */
   reference?: string
   /** ISO dates (YYYY-MM-DD) this fit is planned for. */
   dates: string[]

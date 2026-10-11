@@ -30,17 +30,40 @@ export function href(route: Route): string {
   }
 }
 
+/*
+ * The current route lives in memory and is mirrored to the URL hash when the
+ * host allows it. Sandboxed hosts (like an embedded preview) may refuse
+ * history writes; navigation keeps working regardless.
+ */
+let current = window.location.hash || '#/'
+const listeners = new Set<() => void>()
+const emit = () => listeners.forEach((l) => l())
+
 export function navigate(route: Route, opts: { replace?: boolean } = {}) {
-  if (opts.replace) history.replaceState(null, '', href(route))
-  else history.pushState(null, '', href(route))
-  window.dispatchEvent(new HashChangeEvent('hashchange'))
+  current = href(route)
+  try {
+    if (opts.replace) history.replaceState(null, '', current)
+    else history.pushState(null, '', current)
+  } catch {
+    // History is unavailable; the in-memory route is enough.
+  }
+  emit()
 }
 
+window.addEventListener('hashchange', () => {
+  current = window.location.hash || '#/'
+  emit()
+})
+window.addEventListener('popstate', () => {
+  current = window.location.hash || '#/'
+  emit()
+})
+
 const subscribe = (cb: () => void) => {
-  window.addEventListener('hashchange', cb)
-  return () => window.removeEventListener('hashchange', cb)
+  listeners.add(cb)
+  return () => listeners.delete(cb)
 }
 
 export function useHash(): string {
-  return useSyncExternalStore(subscribe, () => window.location.hash)
+  return useSyncExternalStore(subscribe, () => current)
 }
