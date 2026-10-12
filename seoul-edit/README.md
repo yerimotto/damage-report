@@ -18,7 +18,7 @@ same way as the Money Calendar: no framework, no build step. Open
 | `prototype/index.html` | The shell and the bottom tab bar |
 | `prototype/assets/styles.css` | Design tokens, every screen, the phone frame |
 | `prototype/assets/app.js` | Screens, flat-lay collage, builder, saving to localStorage |
-| `prototype/assets/data.js` | The closet and fits from `closet.json` |
+| `prototype/assets/data.js` | The trips (Tokyo, Seoul, Paris), the shared closet, and the fits from `closet.json` |
 | `prototype/pieces/` | The cutouts, resized to 560px WebP |
 
 `npm run build:prototype` packs it into one self-contained file,

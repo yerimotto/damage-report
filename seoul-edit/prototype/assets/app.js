@@ -47,33 +47,49 @@
   function src(piece) { return IMAGES[piece.image] || piece.image; }
 
   /** "−7° / 2°" → "−7° to 2°C" */
-  function tempLabel() {
-    return D.TRIP.tempRange.split('/').map(function (s) { return s.trim(); }).join(' to ') + 'C';
+  function tempLabel(trip) {
+    return trip.tempRange.split('/').map(function (s) { return s.trim(); }).join(' to ') + 'C';
   }
 
   /* ---------- state ------------------------------------------------------ */
 
   function clone(x) { return JSON.parse(JSON.stringify(x)); }
 
+  var trips = D.TRIPS;
+  function tripById(id) {
+    for (var i = 0; i < trips.length; i++) if (trips[i].id === id) return trips[i];
+    return null;
+  }
+
   function load() {
-    try {
-      var saved = JSON.parse(localStorage.getItem(STORE_KEY));
-      if (saved && Array.isArray(saved.fits)) return saved.fits;
-    } catch (e) { /* private window or corrupt data: start from the starter fits */ }
-    return clone(D.FITS);
+    var saved = null;
+    try { saved = JSON.parse(localStorage.getItem(STORE_KEY)); } catch (e) { /* private window or corrupt data */ }
+    var list = saved && Array.isArray(saved.fits) ? saved.fits : clone(D.FITS);
+    /* Fits saved before there were several trips all belong to Seoul. */
+    list.forEach(function (f) { if (!f.tripId) f.tripId = D.START_TRIP; });
+    var trip = saved && tripById(saved.tripId) ? saved.tripId : D.START_TRIP;
+    return { fits: list, tripId: trip };
   }
 
   var pieces = D.PIECES;
   var byId = {};
   pieces.forEach(function (p) { byId[p.id] = p; });
 
-  var fits = load();
+  var loaded = load();
+  var fits = loaded.fits;
+  /* The trip shown on the home screen; new fits are added to it. */
+  var tripId = loaded.tripId;
   var route = { name: 'fits' };
   /* The fit being built or edited; null outside the builder. */
   var draft = null;
 
   function save() {
-    try { localStorage.setItem(STORE_KEY, JSON.stringify({ fits: fits })); } catch (e) { /* storage blocked */ }
+    try { localStorage.setItem(STORE_KEY, JSON.stringify({ fits: fits, tripId: tripId })); } catch (e) { /* storage blocked */ }
+  }
+
+  function trip() { return tripById(tripId); }
+  function tripFits(id) {
+    return fits.filter(function (f) { return f.tripId === (id || tripId); });
   }
 
   function fitById(id) {
@@ -85,7 +101,7 @@
   }
   function nextFitName() {
     var max = 0;
-    fits.forEach(function (f) {
+    tripFits().forEach(function (f) {
       var m = /^Fit (\d+)$/.exec(f.name);
       if (m) max = Math.max(max, Number(m[1]));
     });
@@ -94,7 +110,7 @@
 
   /** "Also worn in Fit 1 · 4", or "Only here". */
   function alsoWornIn(pieceId, fit) {
-    var others = fits.filter(function (f) { return f.id !== fit.id && f.pieceIds.indexOf(pieceId) !== -1; });
+    var others = tripFits(fit.tripId).filter(function (f) { return f.id !== fit.id && f.pieceIds.indexOf(pieceId) !== -1; });
     if (!others.length) return 'Only here';
     var nums = others.map(function (f) { var m = /^Fit (\d+)$/.exec(f.name); return m && m[1]; });
     if (nums.every(Boolean)) return 'Also worn in Fit ' + nums.join(' · ');
@@ -135,30 +151,77 @@
 
   /* ---------- screens ---------------------------------------------------- */
 
+  /* The home screen: a row of trip names to tap, a title you can swipe
+     between trips, and that trip's fits. Changing trip redraws only the
+     parts below the title (tripBody), so the swipe is never interrupted. */
   function fitsScreen() {
-    var packed = {};
-    fits.forEach(function (f) { f.pieceIds.forEach(function (id) { packed[id] = true; }); });
-    var title = D.TRIP.title;
-    var cut = title.lastIndexOf(' ');
+    var cities = trips.map(function (t) {
+      return '<button type="button" class="trip-tab label" data-trip="' + t.id + '"' + (t.id === tripId ? ' aria-current="true"' : '') + '>' + esc(t.city) + '</button>';
+    }).join('');
+    var slides = trips.map(function (t) {
+      return '<div class="trip-slide" data-slide="' + t.id + '"><h1 class="serif trip-title">' + esc(t.month) + ' in<br>' + esc(t.city) + '</h1></div>';
+    }).join('');
 
-    var cards = fits.map(function (f) {
+    return '<header class="topbar label"><span>The Seoul Edit</span><span class="soft" id="tripTemp">' + tempLabel(trip()) + '</span></header>' +
+      '<nav class="trip-tabs" aria-label="Trips">' + cities + '</nav>' +
+      '<div class="trip-carousel" id="tripCarousel" aria-label="Swipe between trips">' + slides + '</div>' +
+      '<div id="tripBody">' + tripBody() + '</div>';
+  }
+
+  function tripBody() {
+    var list = tripFits();
+    var packed = {};
+    list.forEach(function (f) { f.pieceIds.forEach(function (id) { packed[id] = true; }); });
+
+    var cards = list.map(function (f) {
       return '<li><button type="button" class="fit-card" data-go="fit" data-id="' + f.id + '" aria-label="' + esc(f.name) + ', ' + plural(f.pieceIds.length, 'piece') + '">' +
         flatLay(piecesOf(f.pieceIds)) +
         '<p class="serif name">' + esc(f.name) + '</p>' +
         '<p class="count">' + plural(f.pieceIds.length, 'piece') + '</p></button></li>';
     }).join('');
 
-    return '<header class="topbar label"><span>The Seoul Edit</span><span class="soft">' + tempLabel() + '</span></header>' +
-      '<h1 class="serif trip-title" style="margin-top:32px">' + esc(title.slice(0, cut)) + '<br>' + esc(title.slice(cut + 1)) + '</h1>' +
-      '<p class="home-sub">' + plural(fits.length, 'fit') + ' · ' + plural(Object.keys(packed).length, 'piece') + ' in the suitcase</p>' +
+    return '<p class="home-sub">' + (list.length
+        ? plural(list.length, 'fit') + ' · ' + plural(Object.keys(packed).length, 'piece') + ' in the suitcase'
+        : 'No fits for ' + esc(trip().city) + ' yet') + '</p>' +
       '<ul class="fit-grid">' +
-        '<li><button type="button" class="new-fit" data-go="new">' + icon('plus') + '<span class="label">New fit</span></button></li>' +
+        '<li class="new-fit-cell"><button type="button" class="new-fit" data-go="new">' + icon('plus') + '<span class="label">New fit</span></button></li>' +
         cards +
       '</ul>';
   }
 
+  /** Makes `id` the current trip and redraws what depends on it. */
+  function setTrip(id) {
+    if (id === tripId || !tripById(id)) return;
+    tripId = id;
+    save();
+    var body = document.getElementById('tripBody');
+    if (!body) return;
+    body.innerHTML = tripBody();
+    document.getElementById('tripTemp').textContent = tempLabel(trip());
+    screenEl.querySelectorAll('.trip-tab').forEach(function (b) {
+      if (b.dataset.trip === id) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+    });
+  }
+
+  /* While a tapped trip glides into place, the slides it passes are ignored. */
+  var gliding = null, glideTimer = 0;
+
+  function slideTo(id, smooth) {
+    var carousel = document.getElementById('tripCarousel');
+    var i = trips.indexOf(tripById(id));
+    if (!carousel || i < 0) return;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (smooth && !reduce) {
+      gliding = id;
+      clearTimeout(glideTimer);
+      glideTimer = setTimeout(function () { gliding = null; }, 900);
+    }
+    carousel.scrollTo({ left: i * carousel.clientWidth, behavior: smooth && !reduce ? 'smooth' : 'auto' });
+  }
+
   function detailScreen(fit) {
-    var index = fits.indexOf(fit);
+    var siblings = tripFits(fit.tripId);
+    var index = siblings.indexOf(fit);
     var list = piecesOf(fit.pieceIds);
     var rows = list.map(function (p) {
       return '<li class="piece-row"><img class="cutout thumb" src="' + src(p) + '" alt="">' +
@@ -167,10 +230,10 @@
 
     return '<header class="topbar">' +
         '<button type="button" class="icon-btn" data-go="fits" aria-label="Back to all fits">' + icon('back') + '</button>' +
-        '<span class="label muted">' + (index + 1) + ' of ' + fits.length + '</span>' +
+        '<span class="label muted">' + esc(tripById(fit.tripId).city) + ' · ' + (index + 1) + ' of ' + siblings.length + '</span>' +
       '</header>' +
       '<h1 class="serif detail-name">' + esc(fit.name) + '</h1>' +
-      '<span class="chip label">' + icon('snow') + tempLabel() + '</span>' +
+      '<span class="chip label">' + icon('snow') + tempLabel(tripById(fit.tripId)) + '</span>' +
       (fit.note ? '<p class="vibe">' + esc(fit.note) + '</p>' : '') +
       '<div class="detail-lay">' + flatLay(list) + '</div>' +
       '<section class="piece-list"><h2 class="label">' + plural(list.length, 'piece') + '</h2><ul>' + rows + '</ul></section>' +
@@ -252,6 +315,7 @@
     if (!swap) { screenEl.style.animation = 'none'; void screenEl.offsetWidth; screenEl.style.animation = ''; }
     screenEl.innerHTML = html;
     if (row) screenEl.querySelector('.filters').scrollLeft = rowScroll;
+    if (route.name === 'fits') slideTo(tripId, false);
 
     var tab = route.name === 'fit' || route.name === 'builder' ? null : route.name;
     tabbar.hidden = !tab;
@@ -281,7 +345,7 @@
       fit.pieceIds = draft.pieceIds.slice();
       fit.note = note;
     } else {
-      fit = { id: 'fit-' + Date.now().toString(36), name: nextFitName(), note: note, dates: [], pieceIds: draft.pieceIds.slice() };
+      fit = { id: 'fit-' + Date.now().toString(36), tripId: tripId, name: nextFitName(), note: note, dates: [], pieceIds: draft.pieceIds.slice() };
       fits.push(fit);
     }
     save();
@@ -296,10 +360,11 @@
   }
 
   document.addEventListener('click', function (e) {
-    var t = e.target.closest('[data-go],[data-toggle],[data-filter],[data-action]');
+    var t = e.target.closest('[data-go],[data-trip],[data-toggle],[data-filter],[data-action]');
     if (!t || t.disabled) return;
 
     if (t.dataset.go) return go(t.dataset.go, t.dataset.id);
+    if (t.dataset.trip) { slideTo(t.dataset.trip, true); return setTrip(t.dataset.trip); }
 
     if (!draft) return;
     if (draft.armed && t.dataset.action !== 'delete') draft.armed = false;
@@ -317,6 +382,20 @@
     else if (t.dataset.action === 'delete') deleteDraft();
     else if (t.dataset.action === 'close') go(draft.id ? 'fit' : 'fits', draft.id || undefined);
   });
+
+  /* Swiping the title: once a slide is more than halfway in, it's the trip.
+     Scroll events don't bubble, so listen in the capture phase. */
+  document.addEventListener('scroll', function (e) {
+    var c = e.target;
+    if (!c || c.id !== 'tripCarousel' || !c.clientWidth) return;
+    var i = Math.round(c.scrollLeft / c.clientWidth);
+    if (!trips[i]) return;
+    if (gliding) { if (trips[i].id === gliding) gliding = null; return; }
+    setTrip(trips[i].id);
+  }, true);
+
+  /* Keep the current slide in place when the window (or phone frame) resizes. */
+  window.addEventListener('resize', function () { if (route.name === 'fits') slideTo(tripId, false); });
 
   /* The vibe line is typed straight into the draft, without a redraw. */
   document.addEventListener('input', function (e) {

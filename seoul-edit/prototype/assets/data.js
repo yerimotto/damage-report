@@ -1,10 +1,17 @@
 /**
- * The Seoul Edit: starter closet and fits, from closet.json.
+ * The Seoul Edit: trips, the shared closet, and the starter fits from closet.json.
  * Images are relative to prototype/; the published single-file build swaps
  * them for embedded copies.
  */
 window.SE_DATA = {
-  TRIP: { title: 'December in Seoul', tempRange: '−7° / 2°', startDate: '2026-12-10', endDate: '2026-12-17' },
+  /* One capsule per trip, in date order. The closet is shared; fits belong to a trip.
+     Temperatures are typical lows / highs for the month. */
+  TRIPS: [
+    { id: 'tokyo-nov', city: 'Tokyo', month: 'November', tempRange: '8° / 17°', startDate: '2026-11-12', endDate: '2026-11-18' },
+    { id: 'seoul-dec', city: 'Seoul', month: 'December', tempRange: '−7° / 2°', startDate: '2026-12-10', endDate: '2026-12-17' },
+    { id: 'paris-dec', city: 'Paris', month: 'December', tempRange: '3° / 8°', startDate: '2026-12-20', endDate: '2026-12-27' }
+  ],
+  START_TRIP: 'seoul-dec',
 
   PIECES: [
     { id: 'brown-wool-coat', name: 'Brown wool coat', category: 'Outer', image: 'pieces/brown-wool-coat.webp' },
@@ -30,13 +37,13 @@ window.SE_DATA = {
   ],
 
   FITS: [
-    { id: 'fit-1', name: 'Fit 1', note: 'Brown wool coat over cream knit. Swap in the raw denim for a sharper version.', dates: [],
+    { id: 'fit-1', tripId: 'seoul-dec', name: 'Fit 1', note: 'Brown wool coat over cream knit. Swap in the raw denim for a sharper version.', dates: [],
       pieceIds: ['brown-wool-coat', 'cream-vneck-knit', 'mid-wash-wide-jeans', 'black-leather-tote'] },
-    { id: 'fit-2', name: 'Fit 2', note: 'All black with a fur jacket and a brown suede bag.', dates: [],
+    { id: 'fit-2', tripId: 'seoul-dec', name: 'Fit 2', note: 'All black with a fur jacket and a brown suede bag.', dates: [],
       pieceIds: ['shearling-fur-jacket', 'black-turtleneck', 'black-straight-jeans', 'brown-suede-hobo'] },
-    { id: 'fit-3', name: 'Fit 3', note: 'Long black coat, cream knit, dark denim and loafers.', dates: [],
+    { id: 'fit-3', tripId: 'seoul-dec', name: 'Fit 3', note: 'Long black coat, cream knit, dark denim and loafers.', dates: [],
       pieceIds: ['black-wool-coat', 'cream-vneck-knit', 'raw-denim-wide-jeans', 'black-leather-tote', 'brown-suede-loafers'] },
-    { id: 'fit-4', name: 'Fit 4', note: 'Leather trench, polo knit and suede skirt with riding boots.', dates: [],
+    { id: 'fit-4', tripId: 'seoul-dec', name: 'Fit 4', note: 'Leather trench, polo knit and suede skirt with riding boots.', dates: [],
       pieceIds: ['leather-trench', 'brown-polo-knit', 'beige-suede-skirt', 'riding-boots', 'two-tone-scarf', 'wool-bucket-hat'] },
   ]
 };

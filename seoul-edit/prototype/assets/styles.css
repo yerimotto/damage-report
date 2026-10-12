@@ -1,14 +1,11 @@
 /* The Seoul Edit — an editorial lookbook: product cutouts on cream, big
-   serif names, hairline rules, a soft pink "New fit" card as the one accent. */
+   serif names, hairline rules, black and cream throughout. */
 :root {
   --cream: #FBF8F1;
   --ink: #1C1A17;
   --ink-2: #6E675D;
   --muted: #8A8277;
   --hairline: #E4DDD1;
-  --pink: #E33DE0;
-  --pink-blush: #F6CFEE;
-  --pink-line: #EBB5E3;
   --desk: #E6DED0;
   --white: #FFFFFF;
 
@@ -37,7 +34,7 @@ body {
 }
 
 button { font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; cursor: pointer; }
-button:focus-visible, input:focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 img { display: block; max-width: 100%; }
 p, h1, h2, ul { margin: 0; padding: 0; }
 ul { list-style: none; }
@@ -61,6 +58,36 @@ ul { list-style: none; }
   font-size: 76px;
   padding-bottom: 6px;
   color: var(--ink);
+}
+
+/* ---------- trips -------------------------------------------------------- */
+
+.trip-tabs { display: flex; gap: 4px; margin-top: 18px; margin-left: -10px; }
+.trip-tab {
+  min-height: 44px;
+  padding-inline: 10px;
+  color: var(--muted);
+  transition: color .2s;
+}
+.trip-tab[aria-current="true"] { color: var(--ink); text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 6px; }
+
+/* The title swipes sideways, one trip per slide. */
+.trip-carousel {
+  display: flex;
+  margin-top: 10px;
+  margin-inline: calc(var(--gutter) * -1);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.trip-carousel::-webkit-scrollbar { display: none; }
+.trip-slide {
+  flex: 0 0 100%;
+  box-sizing: border-box;
+  padding-inline: var(--gutter);
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 
 /* ---------- shell -------------------------------------------------------- */
@@ -193,18 +220,23 @@ ul { list-style: none; }
 .fit-card .name { margin-top: 12px; font-size: 24px; }
 .fit-card .count { margin-top: 4px; font-size: 12px; color: var(--muted); }
 
+/* The "New fit" card fills its whole grid cell, so it stands as tall as the
+   fit tiles beside it (collage, name and count). */
+.new-fit-cell { display: flex; }
 .new-fit {
   width: 100%;
-  aspect-ratio: 384 / 340;
+  height: 100%;
+  min-height: 150px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   border-radius: var(--radius-card);
-  border: 1px solid var(--pink-line);
-  background: linear-gradient(180deg, var(--white) 0%, var(--pink-blush) 100%);
-  box-shadow: 0 10px 24px -12px rgb(227 61 224 / .35);
+  background: var(--ink);
+  color: var(--cream);
+  box-shadow: 0 14px 28px -16px rgb(28 26 23 / .55);
+  transition: transform .15s;
 }
 .new-fit .icon { font-size: 22px; stroke-width: 1.25; }
 .new-fit:active { transform: scale(.98); }
