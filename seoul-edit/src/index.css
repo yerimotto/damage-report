@@ -53,13 +53,6 @@
   letter-spacing: -0.01em;
 }
 
-@utility text-trip-gradient {
-  background: linear-gradient(180deg, var(--color-pink) 0%, var(--color-pink-soft) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
 @utility card-new-fit {
   border-radius: var(--radius-card);
   background: linear-gradient(180deg, #ffffff 0%, var(--color-pink-blush) 100%);

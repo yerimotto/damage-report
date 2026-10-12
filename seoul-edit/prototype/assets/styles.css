@@ -1,5 +1,5 @@
 /* The Seoul Edit — an editorial lookbook: product cutouts on cream, big
-   serif names, hairline rules, one pink accent on the trip title. */
+   serif names, hairline rules, a soft pink "New fit" card as the one accent. */
 :root {
   --cream: #FBF8F1;
   --ink: #1C1A17;
@@ -7,7 +7,6 @@
   --muted: #8A8277;
   --hairline: #E4DDD1;
   --pink: #E33DE0;
-  --pink-soft: #F3B4EC;
   --pink-blush: #F6CFEE;
   --pink-line: #EBB5E3;
   --desk: #E6DED0;
@@ -61,10 +60,7 @@ ul { list-style: none; }
 .trip-title {
   font-size: 76px;
   padding-bottom: 6px;
-  background: linear-gradient(180deg, var(--pink) 0%, var(--pink-soft) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--ink);
 }
 
 /* ---------- shell -------------------------------------------------------- */

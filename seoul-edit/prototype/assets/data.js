@@ -11,6 +11,7 @@ window.SE_DATA = {
     { id: 'black-wool-coat', name: 'Black wool coat', category: 'Outer', image: 'pieces/black-wool-coat.webp' },
     { id: 'leather-trench', name: 'Leather trench', category: 'Outer', image: 'pieces/leather-trench.webp' },
     { id: 'shearling-fur-jacket', name: 'Shearling fur jacket', category: 'Outer', image: 'pieces/shearling-fur-jacket.webp' },
+    { id: 'suede-fur-trim-jacket', name: 'Suede fur-trim jacket', category: 'Outer', image: 'pieces/suede-fur-trim-jacket.webp' },
     { id: 'cream-vneck-knit', name: 'Cream V-neck knit', category: 'Tops', image: 'pieces/cream-vneck-knit.webp' },
     { id: 'black-turtleneck', name: 'Black turtleneck', category: 'Tops', image: 'pieces/black-turtleneck.webp' },
     { id: 'black-crewneck', name: 'Black crewneck', category: 'Tops', image: 'pieces/black-crewneck.webp' },

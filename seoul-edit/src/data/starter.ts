@@ -14,6 +14,7 @@ export const starterData: AppData = {
     { id: 'black-wool-coat', name: 'Black wool coat', category: 'Outer', image: 'pieces/black-wool-coat.png' },
     { id: 'leather-trench', name: 'Leather trench', category: 'Outer', image: 'pieces/leather-trench.png' },
     { id: 'shearling-fur-jacket', name: 'Shearling fur jacket', category: 'Outer', image: 'pieces/shearling-fur-jacket.png' },
+    { id: 'suede-fur-trim-jacket', name: 'Suede fur-trim jacket', category: 'Outer', image: 'pieces/suede-fur-trim-jacket.png' },
     { id: 'cream-vneck-knit', name: 'Cream V-neck knit', category: 'Tops', image: 'pieces/cream-vneck-knit.png' },
     { id: 'black-turtleneck', name: 'Black turtleneck', category: 'Tops', image: 'pieces/black-turtleneck.png' },
     { id: 'black-crewneck', name: 'Black crewneck', category: 'Tops', image: 'pieces/black-crewneck.png' },

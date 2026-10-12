@@ -17,7 +17,7 @@ export function FitsScreen() {
         <span className="text-ink-2">{tempLabel(trip)}</span>
       </header>
 
-      <h1 className="serif-display text-trip-gradient mt-8 pb-2 text-[76px]">
+      <h1 className="serif-display mt-8 text-ink pb-2 text-[76px]">
         {titleHead}
         <br />
         {titleTail}
