@@ -6,6 +6,9 @@
   --ink-2: #6E675D;
   --muted: #8A8277;
   --hairline: #E4DDD1;
+  --dots: #B4AB9E;
+  --faded: #C9C1B4;
+  --wash: #F4EFE6;
   --desk: #E6DED0;
   --white: #FFFFFF;
 
@@ -56,39 +59,96 @@ ul { list-style: none; }
 
 .trip-title {
   font-size: 76px;
+  line-height: .95;
   padding-bottom: 6px;
   color: var(--ink);
 }
 
 /* ---------- trips -------------------------------------------------------- */
 
-.trip-tabs { display: flex; gap: 4px; margin-top: 18px; margin-left: -10px; }
-.trip-tab {
-  min-height: 44px;
-  padding-inline: 10px;
-  color: var(--muted);
-  transition: color .2s;
+/* The month and city in the title are buttons that open the trip menu. */
+.trip-head { position: relative; z-index: 25; margin-top: 32px; }
+.title-word {
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: left;
+  text-decoration: underline dotted;
+  text-decoration-thickness: 2px;
+  text-decoration-color: var(--dots);
+  text-underline-offset: 12px;
+  transition: color .2s, text-decoration-color .2s;
 }
-.trip-tab[aria-current="true"] { color: var(--ink); text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 6px; }
+.title-word.is-open { text-decoration-color: transparent; }
+.title-word.is-dim, .title-in.is-dim { color: var(--faded); text-decoration-color: transparent; }
+.word-chev {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  margin-left: 6px;
+  vertical-align: 14px;
+  border: 1px solid var(--hairline);
+  border-radius: 50%;
+  font-size: 14px;
+  transition: background-color .2s, color .2s, border-color .2s;
+}
+.word-chev .icon { stroke-width: 1.6; }
+.title-word.is-open .word-chev { background: var(--ink); border-color: var(--ink); color: var(--cream); }
+.title-word.is-dim .word-chev { opacity: 0; }
 
-/* The title swipes sideways, one trip per slide. */
-.trip-carousel {
-  display: flex;
-  margin-top: 10px;
-  margin-inline: calc(var(--gutter) * -1);
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  overscroll-behavior-x: contain;
-  scrollbar-width: none;
+.menu-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background: rgb(251 248 241 / .82);
+  animation: fade .18s ease-out;
 }
-.trip-carousel::-webkit-scrollbar { display: none; }
-.trip-slide {
-  flex: 0 0 100%;
+@keyframes fade { from { opacity: 0; } }
+
+.trip-menu {
+  position: absolute;
+  left: 0;
+  z-index: 30;
+  width: min(318px, 100%);
   box-sizing: border-box;
-  padding-inline: var(--gutter);
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
+  padding: 10px;
+  border-radius: 24px;
+  background: var(--white);
+  box-shadow: 0 30px 60px -24px rgb(28 26 23 / .4), 0 0 0 1px rgb(28 26 23 / .05);
+  animation: drop-menu .2s ease-out;
+  transform-origin: top left;
 }
+@keyframes drop-menu { from { opacity: 0; transform: translateY(-6px) scale(.98); } }
+.menu-head { margin: 8px 12px 6px; }
+.menu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 16px;
+  text-align: left;
+}
+.menu-item:active, .menu-item:hover { background: var(--wash); }
+.menu-item[aria-checked="true"] { background: var(--wash); }
+.menu-item > span:first-child { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.menu-big { font-size: 34px; }
+.menu-small { font-size: 13px; color: var(--ink-2); }
+.menu-check {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--cream);
+  font-size: 14px;
+}
+.menu-check .icon { stroke-width: 2; }
 
 /* ---------- shell -------------------------------------------------------- */
 
@@ -207,7 +267,7 @@ ul { list-style: none; }
 
 /* ---------- fits (home) -------------------------------------------------- */
 
-.home-sub { margin-top: 12px; font-size: 15px; color: var(--ink-2); }
+.home-sub { margin-top: 22px; font-size: 15px; color: var(--ink-2); }
 
 .fit-grid {
   margin-top: 36px;

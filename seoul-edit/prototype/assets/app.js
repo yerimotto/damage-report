@@ -23,6 +23,8 @@
     back: '<path d="M19 12H5M12 19l-7-7 7-7"/>',
     close: '<path d="M18 6 6 18M6 6l12 12"/>',
     check: '<path d="M20 6 9 17l-5-5"/>',
+    down: '<path d="m6 9 6 6 6-6"/>',
+    up: '<path d="m18 15-6-6-6 6"/>',
     trash: '<path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/>',
     snow: '<path d="M12 2v20M4.9 4.9l14.2 14.2M2 12h20M4.9 19.1 19.1 4.9M9 4l3 3 3-3M9 20l3-3 3 3M4 9l3 3-3 3M20 9l-3 3 3 3"/>',
     sparkles: '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4M17 5h4"/>',
@@ -80,6 +82,8 @@
   /* The trip shown on the home screen; new fits are added to it. */
   var tripId = loaded.tripId;
   var route = { name: 'fits' };
+  /* Which title word's trip menu is open: 'month', 'city' or null. */
+  var menu = null;
   /* The fit being built or edited; null outside the builder. */
   var draft = null;
 
@@ -151,21 +155,39 @@
 
   /* ---------- screens ---------------------------------------------------- */
 
-  /* The home screen: a row of trip names to tap, a title you can swipe
-     between trips, and that trip's fits. Changing trip redraws only the
-     parts below the title (tripBody), so the swipe is never interrupted. */
+  /* The home screen. The month and the city in the title are buttons: either
+     one opens a menu of trips, led by whichever word was tapped. */
   function fitsScreen() {
-    var cities = trips.map(function (t) {
-      return '<button type="button" class="trip-tab label" data-trip="' + t.id + '"' + (t.id === tripId ? ' aria-current="true"' : '') + '>' + esc(t.city) + '</button>';
-    }).join('');
-    var slides = trips.map(function (t) {
-      return '<div class="trip-slide" data-slide="' + t.id + '"><h1 class="serif trip-title">' + esc(t.month) + ' in<br>' + esc(t.city) + '</h1></div>';
-    }).join('');
+    var t = trip();
+    var dim = menu ? ' is-dim' : '';
+    function word(kind, text) {
+      var open = menu === kind;
+      return '<button type="button" class="title-word' + (menu && !open ? ' is-dim' : '') + (open ? ' is-open' : '') + '" data-menu="' + kind + '"' +
+        ' aria-haspopup="menu" aria-expanded="' + open + '" aria-label="' + esc(text) + ', change ' + (kind === 'month' ? 'month' : 'city') + '">' +
+        esc(text) + '<span class="word-chev" aria-hidden="true">' + icon(open ? 'up' : 'down') + '</span></button>';
+    }
 
-    return '<header class="topbar label"><span>The Seoul Edit</span><span class="soft" id="tripTemp">' + tempLabel(trip()) + '</span></header>' +
-      '<nav class="trip-tabs" aria-label="Trips">' + cities + '</nav>' +
-      '<div class="trip-carousel" id="tripCarousel" aria-label="Swipe between trips">' + slides + '</div>' +
-      '<div id="tripBody">' + tripBody() + '</div>';
+    return '<header class="topbar label"><span>The Seoul Edit</span><span class="soft">' + tempLabel(t) + '</span></header>' +
+      '<div class="trip-head">' +
+        '<h1 class="serif trip-title">' + word('month', t.month) + '<span class="title-in' + dim + '"> in</span><br>' + word('city', t.city) + '</h1>' +
+        (menu ? tripMenu() : '') +
+      '</div>' +
+      (menu ? '<div class="menu-scrim" data-action="close-menu"></div>' : '') +
+      tripBody();
+  }
+
+  /** The trip menu. Each row leads with the word that was tapped (month or city). */
+  function tripMenu() {
+    var rows = trips.map(function (t) {
+      var n = tripFits(t.id).length;
+      var big = menu === 'month' ? t.month : t.city;
+      var small = (menu === 'month' ? t.city : t.month) + ' · ' + tempLabel(t) + ' · ' + (n ? plural(n, 'fit') : 'no fits yet');
+      var on = t.id === tripId;
+      return '<button type="button" class="menu-item" role="menuitemradio" aria-checked="' + on + '" data-trip="' + t.id + '">' +
+        '<span><span class="serif menu-big">' + esc(big) + '</span><span class="menu-small">' + esc(small) + '</span></span>' +
+        (on ? '<span class="menu-check">' + icon('check') + '</span>' : '') + '</button>';
+    }).join('');
+    return '<div class="trip-menu" role="menu" aria-label="Switch trip"><p class="label muted menu-head">Switch trip</p>' + rows + '</div>';
   }
 
   function tripBody() {
@@ -189,34 +211,33 @@
       '</ul>';
   }
 
-  /** Makes `id` the current trip and redraws what depends on it. */
+  /** Makes `id` the current trip, closes the menu and redraws in place. */
   function setTrip(id) {
-    if (id === tripId || !tripById(id)) return;
-    tripId = id;
-    save();
-    var body = document.getElementById('tripBody');
-    if (!body) return;
-    body.innerHTML = tripBody();
-    document.getElementById('tripTemp').textContent = tempLabel(trip());
-    screenEl.querySelectorAll('.trip-tab').forEach(function (b) {
-      if (b.dataset.trip === id) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
-    });
+    menu = null;
+    if (tripById(id)) { tripId = id; save(); }
+    render(true);
+    var w = screenEl.querySelector('.title-word');
+    if (w) w.focus({ preventScroll: true });
   }
 
-  /* While a tapped trip glides into place, the slides it passes are ignored. */
-  var gliding = null, glideTimer = 0;
+  function openMenu(kind) {
+    menu = menu === kind ? null : kind;
+    render(true);
+    if (!menu) return;
+    /* Hang the menu just under the word that opened it. */
+    var btn = screenEl.querySelector('.title-word[data-menu="' + kind + '"]');
+    var box = screenEl.querySelector('.trip-menu');
+    box.style.top = (btn.offsetTop + btn.offsetHeight + 10) + 'px';
+    var current = box.querySelector('[aria-checked="true"]') || box.querySelector('.menu-item');
+    current.focus({ preventScroll: true });
+  }
 
-  function slideTo(id, smooth) {
-    var carousel = document.getElementById('tripCarousel');
-    var i = trips.indexOf(tripById(id));
-    if (!carousel || i < 0) return;
-    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (smooth && !reduce) {
-      gliding = id;
-      clearTimeout(glideTimer);
-      glideTimer = setTimeout(function () { gliding = null; }, 900);
-    }
-    carousel.scrollTo({ left: i * carousel.clientWidth, behavior: smooth && !reduce ? 'smooth' : 'auto' });
+  function closeMenu() {
+    var kind = menu;
+    menu = null;
+    render(true);
+    var w = screenEl.querySelector('.title-word[data-menu="' + kind + '"]');
+    if (w) w.focus({ preventScroll: true });
   }
 
   function detailScreen(fit) {
@@ -315,7 +336,6 @@
     if (!swap) { screenEl.style.animation = 'none'; void screenEl.offsetWidth; screenEl.style.animation = ''; }
     screenEl.innerHTML = html;
     if (row) screenEl.querySelector('.filters').scrollLeft = rowScroll;
-    if (route.name === 'fits') slideTo(tripId, false);
 
     var tab = route.name === 'fit' || route.name === 'builder' ? null : route.name;
     tabbar.hidden = !tab;
@@ -332,6 +352,7 @@
       route = { name: 'builder' };
     } else {
       draft = null;
+      menu = null;
       route = { name: name, id: id };
     }
     render(false);
@@ -360,11 +381,13 @@
   }
 
   document.addEventListener('click', function (e) {
-    var t = e.target.closest('[data-go],[data-trip],[data-toggle],[data-filter],[data-action]');
+    var t = e.target.closest('[data-go],[data-menu],[data-trip],[data-toggle],[data-filter],[data-action]');
     if (!t || t.disabled) return;
 
     if (t.dataset.go) return go(t.dataset.go, t.dataset.id);
-    if (t.dataset.trip) { slideTo(t.dataset.trip, true); return setTrip(t.dataset.trip); }
+    if (t.dataset.menu) return openMenu(t.dataset.menu);
+    if (t.dataset.trip) return setTrip(t.dataset.trip);
+    if (t.dataset.action === 'close-menu') return closeMenu();
 
     if (!draft) return;
     if (draft.armed && t.dataset.action !== 'delete') draft.armed = false;
@@ -383,19 +406,17 @@
     else if (t.dataset.action === 'close') go(draft.id ? 'fit' : 'fits', draft.id || undefined);
   });
 
-  /* Swiping the title: once a slide is more than halfway in, it's the trip.
-     Scroll events don't bubble, so listen in the capture phase. */
-  document.addEventListener('scroll', function (e) {
-    var c = e.target;
-    if (!c || c.id !== 'tripCarousel' || !c.clientWidth) return;
-    var i = Math.round(c.scrollLeft / c.clientWidth);
-    if (!trips[i]) return;
-    if (gliding) { if (trips[i].id === gliding) gliding = null; return; }
-    setTrip(trips[i].id);
-  }, true);
-
-  /* Keep the current slide in place when the window (or phone frame) resizes. */
-  window.addEventListener('resize', function () { if (route.name === 'fits') slideTo(tripId, false); });
+  /* Escape closes the trip menu; arrow keys move through it. */
+  document.addEventListener('keydown', function (e) {
+    if (!menu) return;
+    if (e.key === 'Escape') { e.preventDefault(); return closeMenu(); }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      var items = Array.prototype.slice.call(screenEl.querySelectorAll('.menu-item'));
+      var i = items.indexOf(document.activeElement);
+      var next = items[(i + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length];
+      if (next) { e.preventDefault(); next.focus(); }
+    }
+  });
 
   /* The vibe line is typed straight into the draft, without a redraw. */
   document.addEventListener('input', function (e) {
