@@ -329,7 +329,7 @@
       '<div class="builder-head"><h1 class="serif">' + esc(editing ? editing.name : nextFitName()) + '</h1>' +
         '<span class="label muted">' + plural(n, 'piece') + '</span></div>' +
       '<div class="preview">' + flatLay(selected,
-        '<div class="preview-empty">' + sticker('🧥', 'sticker-hero') + '<p class="serif">Start with a coat</p><p>Tap pieces below to build the flat lay</p></div>', draft.fresh) + '</div>' +
+        '<div class="preview-empty"><p class="serif">Tap a piece below to build your outfit</p></div>', draft.fresh) + '</div>' +
       '<input class="vibe-input" id="vibe" maxlength="80" placeholder="The vibe, in one line" value="' + esc(draft.note) + '">' +
       '<div class="filters" role="group" aria-label="Filter by category">' + filters + '</div>' +
       '<ul class="closet-grid">' + grid + '</ul>' +

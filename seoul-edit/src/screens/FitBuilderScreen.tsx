@@ -97,8 +97,7 @@ export function FitBuilderScreen({ id }: { id?: string }) {
             pieces={selectedPieces}
             empty={
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center">
-                <p className="serif-display text-[34px] text-ink-2">Start with a coat</p>
-                <p className="text-[13px] text-muted">Tap pieces below to build the flat lay</p>
+                <p className="serif-display max-w-[260px] text-[32px] leading-none text-ink-2">Tap a piece below to build your outfit</p>
               </div>
             }
           />
