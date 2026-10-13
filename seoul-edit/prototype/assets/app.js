@@ -53,6 +53,22 @@
     return trip.tempRange.split('/').map(function (s) { return s.trim(); }).join(' to ') + 'C';
   }
 
+  /* ---------- stickers --------------------------------------------------- */
+
+  /* Emoji are drawn as die-cut stickers: a white edge, a lip and a soft
+     shadow (see .sticker). They're decoration, so screen readers skip them. */
+  var CATEGORY_EMOJI = { All: '✨', Outer: '🧥', Tops: '👚', Bottoms: '👖', Shoes: '👢', Bags: '👜', Extras: '🧣' };
+
+  function sticker(emoji, cls) {
+    return '<span class="sticker' + (cls ? ' ' + cls : '') + '" aria-hidden="true">' + emoji + '</span>';
+  }
+
+  /** Snow when the lows drop below freezing, a scarf when it's cold, leaves when it's mild. */
+  function weatherEmoji(trip) {
+    var low = parseFloat(trip.tempRange.replace('−', '-'));
+    return low < 0 ? '❄️' : low <= 10 ? '🧣' : '🍂';
+  }
+
   /* ---------- state ------------------------------------------------------ */
 
   function clone(x) { return JSON.parse(JSON.stringify(x)); }
@@ -84,6 +100,8 @@
   var route = { name: 'fits' };
   /* Which title word's trip menu is open: 'month', 'city' or null. */
   var menu = null;
+  /* Set for one redraw after switching trip, so the trip's sticker pops in. */
+  var justSwitched = false;
   /* The fit being built or edited; null outside the builder. */
   var draft = null;
 
@@ -167,9 +185,10 @@
         esc(text) + '<span class="word-chev" aria-hidden="true">' + icon(open ? 'up' : 'down') + '</span></button>';
     }
 
-    return '<header class="topbar label"><span>The Seoul Edit</span><span class="soft">' + tempLabel(t) + '</span></header>' +
+    return '<header class="topbar label"><span>The Seoul Edit</span><span class="soft temp">' + sticker(weatherEmoji(t), 'sticker-xs') + tempLabel(t) + '</span></header>' +
       '<div class="trip-head">' +
-        '<h1 class="serif trip-title">' + word('month', t.month) + '<span class="title-in' + dim + '"> in</span><br>' + word('city', t.city) + '</h1>' +
+        '<h1 class="serif trip-title">' + word('month', t.month) + '<span class="title-in' + dim + '"> in</span><br>' + word('city', t.city) +
+          sticker(t.emoji, 'sticker-title' + dim + (justSwitched ? ' is-pop' : '')) + '</h1>' +
         (menu ? tripMenu() : '') +
       '</div>' +
       (menu ? '<div class="menu-scrim" data-action="close-menu"></div>' : '') +
@@ -184,7 +203,8 @@
       var small = (menu === 'month' ? t.city : t.month) + ' · ' + tempLabel(t) + ' · ' + (n ? plural(n, 'fit') : 'no fits yet');
       var on = t.id === tripId;
       return '<button type="button" class="menu-item" role="menuitemradio" aria-checked="' + on + '" data-trip="' + t.id + '">' +
-        '<span><span class="serif menu-big">' + esc(big) + '</span><span class="menu-small">' + esc(small) + '</span></span>' +
+        sticker(t.emoji, 'sticker-menu') +
+        '<span class="menu-text"><span class="serif menu-big">' + esc(big) + '</span><span class="menu-small">' + esc(small) + '</span></span>' +
         (on ? '<span class="menu-check">' + icon('check') + '</span>' : '') + '</button>';
     }).join('');
     return '<div class="trip-menu" role="menu" aria-label="Switch trip"><p class="label muted menu-head">Switch trip</p>' + rows + '</div>';
@@ -206,7 +226,7 @@
         ? plural(list.length, 'fit') + ' · ' + plural(Object.keys(packed).length, 'piece') + ' in the suitcase'
         : 'No fits for ' + esc(trip().city) + ' yet') + '</p>' +
       '<ul class="fit-grid">' +
-        '<li class="new-fit-cell"><button type="button" class="new-fit" data-go="new">' + icon('plus') + '<span class="label">New fit</span></button></li>' +
+        '<li class="new-fit-cell"><button type="button" class="new-fit" data-go="new">' + sticker('✨', 'sticker-corner') + icon('plus') + '<span class="label">New fit</span></button></li>' +
         cards +
       '</ul>';
   }
@@ -214,8 +234,9 @@
   /** Makes `id` the current trip, closes the menu and redraws in place. */
   function setTrip(id) {
     menu = null;
-    if (tripById(id)) { tripId = id; save(); }
+    if (tripById(id)) { justSwitched = id !== tripId; tripId = id; save(); }
     render(true);
+    justSwitched = false;
     var w = screenEl.querySelector('.title-word');
     if (w) w.focus({ preventScroll: true });
   }
@@ -254,7 +275,7 @@
         '<span class="label muted">' + esc(tripById(fit.tripId).city) + ' · ' + (index + 1) + ' of ' + siblings.length + '</span>' +
       '</header>' +
       '<h1 class="serif detail-name">' + esc(fit.name) + '</h1>' +
-      '<span class="chip label">' + icon('snow') + tempLabel(tripById(fit.tripId)) + '</span>' +
+      '<span class="chip label">' + sticker(weatherEmoji(tripById(fit.tripId)), 'sticker-xs') + tempLabel(tripById(fit.tripId)) + '</span>' +
       (fit.note ? '<p class="vibe">' + esc(fit.note) + '</p>' : '') +
       '<div class="detail-lay">' + flatLay(list) + '</div>' +
       '<section class="piece-list"><h2 class="label">' + plural(list.length, 'piece') + '</h2><ul>' + rows + '</ul></section>' +
@@ -270,7 +291,7 @@
     var n = draft.pieceIds.length;
 
     var filters = ['All'].concat(CATEGORIES).map(function (c) {
-      return '<button type="button" class="filter label" data-filter="' + c + '" aria-pressed="' + (draft.filter === c) + '">' + c + '</button>';
+      return '<button type="button" class="filter label" data-filter="' + c + '" aria-pressed="' + (draft.filter === c) + '">' + sticker(CATEGORY_EMOJI[c], 'sticker-pill') + c + '</button>';
     }).join('');
 
     var grid = pieces.filter(function (p) { return draft.filter === 'All' || p.category === draft.filter; }).map(function (p) {
@@ -294,7 +315,7 @@
       '<div class="builder-head"><h1 class="serif">' + esc(editing ? editing.name : nextFitName()) + '</h1>' +
         '<span class="label muted">' + plural(n, 'piece') + '</span></div>' +
       '<div class="preview">' + flatLay(selected,
-        '<div class="preview-empty"><p class="serif">Start with a coat</p><p>Tap pieces below to build the flat lay</p></div>', draft.fresh) + '</div>' +
+        '<div class="preview-empty">' + sticker('🧥', 'sticker-hero') + '<p class="serif">Start with a coat</p><p>Tap pieces below to build the flat lay</p></div>', draft.fresh) + '</div>' +
       '<input class="vibe-input" id="vibe" maxlength="80" placeholder="The vibe, in one line" value="' + esc(draft.note) + '">' +
       '<div class="filters" role="group" aria-label="Filter by category">' + filters + '</div>' +
       '<ul class="closet-grid">' + grid + '</ul>' +

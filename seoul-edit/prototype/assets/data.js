@@ -7,9 +7,9 @@ window.SE_DATA = {
   /* One capsule per trip, in date order. The closet is shared; fits belong to a trip.
      Temperatures are typical lows / highs for the month. */
   TRIPS: [
-    { id: 'tokyo-nov', city: 'Tokyo', month: 'November', tempRange: '8° / 17°', startDate: '2026-11-12', endDate: '2026-11-18' },
-    { id: 'seoul-dec', city: 'Seoul', month: 'December', tempRange: '−7° / 2°', startDate: '2026-12-10', endDate: '2026-12-17' },
-    { id: 'paris-dec', city: 'Paris', month: 'December', tempRange: '3° / 8°', startDate: '2026-12-20', endDate: '2026-12-27' }
+    { id: 'tokyo-nov', emoji: '🍡', city: 'Tokyo', month: 'November', tempRange: '8° / 17°', startDate: '2026-11-12', endDate: '2026-11-18' },
+    { id: 'seoul-dec', emoji: '⛄', city: 'Seoul', month: 'December', tempRange: '−7° / 2°', startDate: '2026-12-10', endDate: '2026-12-17' },
+    { id: 'paris-dec', emoji: '🥐', city: 'Paris', month: 'December', tempRange: '3° / 8°', startDate: '2026-12-20', endDate: '2026-12-27' }
   ],
   START_TRIP: 'seoul-dec',
 
