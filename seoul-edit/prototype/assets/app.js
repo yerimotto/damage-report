@@ -82,11 +82,24 @@
   function load() {
     var saved = null;
     try { saved = JSON.parse(localStorage.getItem(STORE_KEY)); } catch (e) { /* private window or corrupt data */ }
-    var list = saved && Array.isArray(saved.fits) ? saved.fits : clone(D.FITS);
+    var list = saved && Array.isArray(saved.fits) ? saved.fits : [];
     /* Fits saved before there were several trips all belong to Seoul. */
     list.forEach(function (f) { if (!f.tripId) f.tripId = D.START_TRIP; });
+
+    /* Each trip gets its starter fits once. A save from before trips existed
+       already holds Seoul's, so only the newer trips are filled in; a trip
+       whose fits the viewer has since deleted stays as they left it. */
+    var seeded = saved && Array.isArray(saved.seeded) ? saved.seeded : saved && Array.isArray(saved.fits) ? [D.START_TRIP] : [];
+    trips.forEach(function (t) {
+      if (seeded.indexOf(t.id) !== -1) return;
+      D.FITS.forEach(function (f) {
+        if (f.tripId === t.id && !list.some(function (g) { return g.id === f.id; })) list.push(clone(f));
+      });
+      seeded.push(t.id);
+    });
+
     var trip = saved && tripById(saved.tripId) ? saved.tripId : D.START_TRIP;
-    return { fits: list, tripId: trip };
+    return { fits: list, tripId: trip, seeded: seeded };
   }
 
   var pieces = D.PIECES;
@@ -97,6 +110,7 @@
   var fits = loaded.fits;
   /* The trip shown on the home screen; new fits are added to it. */
   var tripId = loaded.tripId;
+  var seeded = loaded.seeded;
   var route = { name: 'fits' };
   /* Which title word's trip menu is open: 'month', 'city' or null. */
   var menu = null;
@@ -106,7 +120,7 @@
   var draft = null;
 
   function save() {
-    try { localStorage.setItem(STORE_KEY, JSON.stringify({ fits: fits, tripId: tripId })); } catch (e) { /* storage blocked */ }
+    try { localStorage.setItem(STORE_KEY, JSON.stringify({ fits: fits, tripId: tripId, seeded: seeded })); } catch (e) { /* storage blocked */ }
   }
 
   function trip() { return tripById(tripId); }

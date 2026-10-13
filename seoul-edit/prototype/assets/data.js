@@ -45,5 +45,21 @@ window.SE_DATA = {
       pieceIds: ['black-wool-coat', 'cream-vneck-knit', 'raw-denim-wide-jeans', 'black-leather-tote', 'brown-suede-loafers'] },
     { id: 'fit-4', tripId: 'seoul-dec', name: 'Fit 4', note: 'Leather trench, polo knit and suede skirt with riding boots.', dates: [],
       pieceIds: ['leather-trench', 'brown-polo-knit', 'beige-suede-skirt', 'riding-boots', 'two-tone-scarf', 'wool-bucket-hat'] },
+
+    /* Tokyo runs mild: lighter layers, loafers and heeled boots. */
+    { id: 'tokyo-1', tripId: 'tokyo-nov', name: 'Fit 1', note: 'Suede fur-trim jacket and cream knit for dinner in Ginza.', dates: [],
+      pieceIds: ['suede-fur-trim-jacket', 'cream-vneck-knit', 'raw-denim-wide-jeans', 'pointed-heel-boots', 'brown-suede-hobo'] },
+    { id: 'tokyo-2', tripId: 'tokyo-nov', name: 'Fit 2', note: 'Leather trench and loafers for a day in Daikanyama.', dates: [],
+      pieceIds: ['leather-trench', 'black-crewneck', 'mid-wash-wide-jeans', 'brown-suede-loafers', 'black-leather-tote'] },
+    { id: 'tokyo-3', tripId: 'tokyo-nov', name: 'Fit 3', note: 'Shearling jacket and the bucket hat for a late night in Shimokitazawa.', dates: [],
+      pieceIds: ['shearling-fur-jacket', 'brown-polo-knit', 'black-straight-jeans', 'brown-suede-loafers', 'wool-bucket-hat'] },
+
+    /* Paris is cold and grey: suede, wool and a scarf. */
+    { id: 'paris-1', tripId: 'paris-dec', name: 'Fit 1', note: 'Seventies suede in Saint-Germain: fur trim, suede skirt, riding boots.', dates: [],
+      pieceIds: ['suede-fur-trim-jacket', 'black-turtleneck', 'beige-suede-skirt', 'riding-boots', 'brown-suede-hobo', 'two-tone-scarf'] },
+    { id: 'paris-2', tripId: 'paris-dec', name: 'Fit 2', note: 'All black for the Marais at night.', dates: [],
+      pieceIds: ['black-wool-coat', 'black-turtleneck', 'black-straight-jeans', 'pointed-heel-boots', 'black-leather-tote'] },
+    { id: 'paris-3', tripId: 'paris-dec', name: 'Fit 3', note: 'Brown on brown: wool coat, polo knit and loafers.', dates: [],
+      pieceIds: ['brown-wool-coat', 'brown-polo-knit', 'raw-denim-wide-jeans', 'brown-suede-loafers', 'black-leather-tote', 'two-tone-scarf'] },
   ]
 };
